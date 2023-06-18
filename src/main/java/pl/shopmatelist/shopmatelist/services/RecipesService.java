@@ -7,6 +7,10 @@ import pl.shopmatelist.shopmatelist.entity.Recipes;
 import pl.shopmatelist.shopmatelist.mapper.RecipesMapper;
 import pl.shopmatelist.shopmatelist.repository.RecipesRepository;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 @Service
 public class RecipesService {
 
@@ -18,6 +22,19 @@ public class RecipesService {
         this.recipesRepository = recipesRepository;
         this.recipesMapper = recipesMapper;
     }
+    public RecipesDTO findById(Long id){
+        Optional<Recipes> optionalRecipe = recipesRepository.findById(id);
+        if(optionalRecipe.isPresent()){
+            Recipes recipe = optionalRecipe.get();
+            return  recipesMapper.toDTO(recipe);
+        }
+        throw new NoSuchElementException();
+
+    }
+    public List<RecipesDTO> findAll(){
+        List<Recipes> recipes = recipesRepository.findAll();
+        return recipesMapper.toDtoList(recipes);
+    }
 
     public RecipesDTO createRecipes(RecipesDTO recipesDTO) {
         Recipes recipes = recipesMapper.toEntity(recipesDTO);
@@ -25,5 +42,14 @@ public class RecipesService {
         return recipesMapper.toDTO(savedRecipes);
     }
 
-    // Add other methods as needed
+    public void deleteById(Long id){
+        recipesRepository.deleteById(id);
+    }
+
+    public RecipesDTO update(RecipesDTO recipesDTO){
+        Recipes recipe = recipesMapper.toEntity(recipesDTO);
+        Recipes updatedRecipe = recipesRepository.save(recipe);
+        return recipesMapper.toDTO(updatedRecipe);
+    }
+
 }
