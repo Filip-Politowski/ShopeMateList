@@ -29,8 +29,18 @@ public class IngredientsController {
     }
 
     @PostMapping("/ingredients")
-    public IngredientsDTO createIngredients(@RequestBody IngredientsDTO ingredientsDTO) {
+    public IngredientsDTO createIngredient(@RequestBody IngredientsDTO ingredientsDTO) {
         return  ingredientsService.save(ingredientsDTO);
+    }
+
+    @DeleteMapping("/ingredients/{id}")
+    public void deleteIngredientById(@PathVariable Long id){
+        ingredientsService.deleteById(id);
+    }
+
+    @PutMapping("/ingredients")
+    public IngredientsDTO updateIngredient(@RequestBody IngredientsDTO ingredientsDTO){
+        return ingredientsService.update(ingredientsDTO);
     }
 
 
