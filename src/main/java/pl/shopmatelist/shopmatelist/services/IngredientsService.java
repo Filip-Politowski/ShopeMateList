@@ -25,5 +25,5 @@ public class IngredientsService {
         return ingredientsMapper.toDTO(savedIngredients);
     }
 
-    // Add other methods as needed
+
 }
