@@ -7,6 +7,11 @@ import pl.shopmatelist.shopmatelist.entity.Ingredients;
 import pl.shopmatelist.shopmatelist.mapper.IngredientsMapper;
 import pl.shopmatelist.shopmatelist.repository.IngredientsRepository;
 
+import java.io.FileNotFoundException;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 @Service
 public class IngredientsService {
 
@@ -19,7 +24,22 @@ public class IngredientsService {
         this.ingredientsMapper = ingredientsMapper;
     }
 
-    public IngredientsDTO createIngredients(IngredientsDTO ingredientsDTO) {
+    public IngredientsDTO findById(Long id) {
+        Optional<Ingredients> optionalIngredient = ingredientsRepository.findById(id);
+        if(optionalIngredient.isPresent()){
+            Ingredients ingredient = optionalIngredient.get();
+            return ingredientsMapper.toDTO(ingredient);
+        }
+        throw new NoSuchElementException();
+
+    }
+
+    public List<IngredientsDTO> findAll() {
+        List<Ingredients> ingredients = ingredientsRepository.findAll();
+        return ingredientsMapper.toDtoList(ingredients);
+    }
+
+    public IngredientsDTO save(IngredientsDTO ingredientsDTO) {
         Ingredients ingredients = ingredientsMapper.toEntity(ingredientsDTO);
         Ingredients savedIngredients = ingredientsRepository.save(ingredients);
         return ingredientsMapper.toDTO(savedIngredients);
