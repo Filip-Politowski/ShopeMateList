@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.shopmatelist.shopmatelist.dto.IngredientsDTO;
 import pl.shopmatelist.shopmatelist.entity.Ingredients;
+import pl.shopmatelist.shopmatelist.entity.Products;
 import pl.shopmatelist.shopmatelist.mapper.IngredientsMapper;
 import pl.shopmatelist.shopmatelist.repository.IngredientsRepository;
 
@@ -52,6 +53,9 @@ public class IngredientsService {
         Ingredients ingredient= ingredientsMapper.toEntity(ingredientsDTO);
         Ingredients updatedIngredient = ingredientsRepository.save(ingredient);
         return ingredientsMapper.toDTO(updatedIngredient);
+    }
+    public List<Products> getProductsByRecipeId(Long recipeId) {
+        return ingredientsRepository.findProductsByRecipeId(recipeId);
     }
 
 

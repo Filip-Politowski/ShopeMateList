@@ -3,6 +3,7 @@ package pl.shopmatelist.shopmatelist.rest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pl.shopmatelist.shopmatelist.dto.IngredientsDTO;
+import pl.shopmatelist.shopmatelist.entity.Products;
 import pl.shopmatelist.shopmatelist.services.IngredientsService;
 
 import java.util.List;
