@@ -3,12 +3,12 @@ package pl.shopmatelist.shopmatelist.rest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import pl.shopmatelist.shopmatelist.dto.IngredientsDTO;
 import pl.shopmatelist.shopmatelist.dto.RecipesDTO;
 import pl.shopmatelist.shopmatelist.services.RecipesService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -21,11 +21,25 @@ public class RecipesController {
         this.recipesService = recipesService;
     }
 
-    @PostMapping("/recipes")
-    public ResponseEntity<RecipesDTO> createRecipes(@RequestBody RecipesDTO recipesDTO) {
-        RecipesDTO createdRecipes = recipesService.createRecipes(recipesDTO);
-        return new ResponseEntity<>(createdRecipes, HttpStatus.CREATED);
+    @GetMapping("/recipes/{id}")
+    public RecipesDTO findRecipeById(@PathVariable Long id){
+        return recipesService.findById(id);
     }
 
-    // Add other endpoints as needed
+    @GetMapping("/recipes")
+    public List<RecipesDTO> findAllRecipes(){
+        return recipesService.findAll();
+    }
+
+    @PostMapping("/recipes")
+    public RecipesDTO createRecipes(@RequestBody RecipesDTO recipesDTO) {
+        return  recipesService.createRecipes(recipesDTO);
+    }
+
+    @DeleteMapping("/recipes/{id}")
+    public void deleteRecipesById(@PathVariable Long id){
+        recipesService.deleteById(id);
+    }
+
+
 }

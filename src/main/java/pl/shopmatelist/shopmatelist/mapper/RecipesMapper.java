@@ -4,6 +4,9 @@ import org.springframework.stereotype.Component;
 import pl.shopmatelist.shopmatelist.dto.RecipesDTO;
 import pl.shopmatelist.shopmatelist.entity.Recipes;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class RecipesMapper {
 
@@ -21,5 +24,10 @@ public class RecipesMapper {
         recipes.setRecipeName(dto.getRecipeName());
         recipes.setRecipeDescription(dto.getRecipeDescription());
         return recipes;
+    }
+    public List<RecipesDTO> toDtoList(List<Recipes> recipes){
+        return  recipes.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 }

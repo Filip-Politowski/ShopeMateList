@@ -7,21 +7,22 @@ import pl.shopmatelist.shopmatelist.dto.IngredientsDTO;
 import pl.shopmatelist.shopmatelist.entity.Ingredients;
 import pl.shopmatelist.shopmatelist.entity.Products;
 import pl.shopmatelist.shopmatelist.entity.Recipes;
-import pl.shopmatelist.shopmatelist.repository.IngredientsRepository;
 import pl.shopmatelist.shopmatelist.repository.ProductsRepository;
 import pl.shopmatelist.shopmatelist.repository.RecipesRepository;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class IngredientsMapper {
-    private final IngredientsRepository ingredientsRepository;
+
     private final RecipesRepository recipesRepository;
     private final ProductsRepository productsRepository;
 
     @Autowired
-    public IngredientsMapper(IngredientsRepository ingredientsRepository,
-                             RecipesRepository recipesRepository,
+    public IngredientsMapper(RecipesRepository recipesRepository,
                              ProductsRepository productsRepository) {
-        this.ingredientsRepository = ingredientsRepository;
+
         this.recipesRepository = recipesRepository;
         this.productsRepository = productsRepository;
     }
@@ -49,5 +50,11 @@ public class IngredientsMapper {
         ingredients.setQuantity(dto.getQuantity());
 
         return ingredients;
+    }
+
+    public List<IngredientsDTO> toDtoList(List<Ingredients> ingredients) {
+        return ingredients.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 }

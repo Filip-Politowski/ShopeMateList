@@ -1,14 +1,12 @@
 package pl.shopmatelist.shopmatelist.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.shopmatelist.shopmatelist.dto.IngredientsDTO;
+import pl.shopmatelist.shopmatelist.entity.Products;
 import pl.shopmatelist.shopmatelist.services.IngredientsService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -21,10 +19,30 @@ public class IngredientsController {
         this.ingredientsService = ingredientsService;
     }
 
-    @PostMapping("/ingredients")
-    public IngredientsDTO createIngredients(@RequestBody IngredientsDTO ingredientsDTO) {
-        return  ingredientsService.createIngredients(ingredientsDTO);
+    @GetMapping("/ingredients/{id}")
+    public IngredientsDTO findIngredientById(@PathVariable Long id){
+        return ingredientsService.findById(id);
     }
 
-    // Add other endpoints as needed
+    @GetMapping("/ingredients")
+    public List<IngredientsDTO>findAllIngredients(){
+        return ingredientsService.findAll();
+    }
+
+    @PostMapping("/ingredients")
+    public IngredientsDTO createIngredient(@RequestBody IngredientsDTO ingredientsDTO) {
+        return  ingredientsService.save(ingredientsDTO);
+    }
+
+    @DeleteMapping("/ingredients/{id}")
+    public void deleteIngredientById(@PathVariable Long id){
+        ingredientsService.deleteById(id);
+    }
+
+    @PutMapping("/ingredients")
+    public IngredientsDTO updateIngredient(@RequestBody IngredientsDTO ingredientsDTO){
+        return ingredientsService.update(ingredientsDTO);
+    }
+
+
 }
