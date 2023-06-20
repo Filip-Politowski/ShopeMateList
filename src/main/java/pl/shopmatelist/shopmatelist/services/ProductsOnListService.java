@@ -35,6 +35,12 @@ public class ProductsOnListService {
         return productsOnListMapper.toDtoList(productsOnLists);
     }
 
+    public ProductsOnListDTO save(ProductsOnListDTO productsOnListDTO) {
+        ProductsOnList productsOnList = productsOnListMapper.toEntity(productsOnListDTO);
+        ProductsOnList savedProductsOnList = productsOnListRepository.save(productsOnList);
+        return productsOnListMapper.toDto(savedProductsOnList);
+    }
+
     public void deleteById(Long id) {
         productsOnListRepository.deleteById(id);
     }
