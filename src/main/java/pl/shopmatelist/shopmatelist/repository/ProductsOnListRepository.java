@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import pl.shopmatelist.shopmatelist.entity.ProductsOnList;
 
 @Repository
-public interface ProductOnListRepository extends JpaRepository<ProductsOnList, Long> {
+public interface ProductsOnListRepository extends JpaRepository<ProductsOnList, Long> {
 }
