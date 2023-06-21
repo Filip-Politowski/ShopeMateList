@@ -27,7 +27,7 @@ public class IngredientsService {
 
     public IngredientsDTO findById(Long id) {
         Optional<Ingredients> optionalIngredient = ingredientsRepository.findById(id);
-        if(optionalIngredient.isPresent()){
+        if (optionalIngredient.isPresent()) {
             Ingredients ingredient = optionalIngredient.get();
             return ingredientsMapper.toDTO(ingredient);
         }
@@ -46,17 +46,22 @@ public class IngredientsService {
         return ingredientsMapper.toDTO(savedIngredients);
     }
 
-    public void deleteById(Long id){
+    public void deleteById(Long id) {
         ingredientsRepository.deleteById(id);
     }
 
-    public IngredientsDTO update(IngredientsDTO ingredientsDTO){
-        Ingredients ingredient= ingredientsMapper.toEntity(ingredientsDTO);
+    public IngredientsDTO update(IngredientsDTO ingredientsDTO) {
+        Ingredients ingredient = ingredientsMapper.toEntity(ingredientsDTO);
         Ingredients updatedIngredient = ingredientsRepository.save(ingredient);
         return ingredientsMapper.toDTO(updatedIngredient);
     }
-    public List<ProductsDTO> getProductsByRecipeId(Long recipeId) {
+
+    public List<Products> getProductsByRecipeId(Long recipeId) {
         return ingredientsRepository.findProductsByRecipeId(recipeId);
+    }
+
+    public List<Ingredients> getIngredientsByRecipeId(Long recipeId) {
+        return ingredientsRepository.findIngredientsByRecipeId(recipeId);
     }
 
 

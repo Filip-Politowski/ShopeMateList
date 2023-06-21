@@ -28,6 +28,10 @@ public class ProductsOnListController {
     public ProductsOnListDTO createProductOnList(@RequestBody ProductsOnListDTO productsOnListDTO){
         return productsOnListService.save(productsOnListDTO);
     }
+    @PostMapping("/productsonlist/recipe/{recipeId}/{shoppingListId}")
+    public List<ProductsOnListDTO> addAllProductsFromRecipe(@PathVariable Long recipeId, @PathVariable Long shoppingListId){
+        return productsOnListService.addingAllProductsByRecipe(recipeId,shoppingListId);
+    }
 
     @DeleteMapping("productsonlist/{id}")
     public void deleteProductsOnList(@PathVariable Long id){
