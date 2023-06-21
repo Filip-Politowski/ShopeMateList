@@ -30,7 +30,7 @@ public class ProductsOnListController {
     }
     @PostMapping("/productsonlist/recipe/{recipeId}/{shoppingListId}")
     public List<ProductsOnListDTO> addAllProductsFromRecipe(@PathVariable Long recipeId, @PathVariable Long shoppingListId){
-        return productsOnListService.addingAllProductsByRecipe(recipeId,shoppingListId);
+        return productsOnListService.addingAllProductsFromRecipe(recipeId,shoppingListId);
     }
 
     @DeleteMapping("productsonlist/{id}")

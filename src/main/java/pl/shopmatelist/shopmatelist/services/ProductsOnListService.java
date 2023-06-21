@@ -1,20 +1,14 @@
 package pl.shopmatelist.shopmatelist.services;
-
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.shopmatelist.shopmatelist.dto.ProductsOnListDTO;
 import pl.shopmatelist.shopmatelist.dto.ShoppingListDTO;
 import pl.shopmatelist.shopmatelist.entity.Ingredients;
-import pl.shopmatelist.shopmatelist.entity.Products;
 import pl.shopmatelist.shopmatelist.entity.ProductsOnList;
 import pl.shopmatelist.shopmatelist.entity.ShoppingList;
-import pl.shopmatelist.shopmatelist.mapper.IngredientsMapper;
-import pl.shopmatelist.shopmatelist.mapper.ProductsMapper;
 import pl.shopmatelist.shopmatelist.mapper.ProductsOnListMapper;
 import pl.shopmatelist.shopmatelist.mapper.ShoppingListMapper;
 import pl.shopmatelist.shopmatelist.repository.ProductsOnListRepository;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -27,11 +21,8 @@ public class ProductsOnListService {
     private final ProductsOnListRepository productsOnListRepository;
     private final ProductsOnListMapper productsOnListMapper;
     private final IngredientsService ingredientsService;
-    private final IngredientsMapper ingredientsMapper;
-    private final ProductsMapper productsMapper;
     private final ShoppingListService shoppingListService;
     private final ShoppingListMapper shoppingListMapper;
-
 
 
     public ProductsOnListDTO findById(Long id) {
@@ -64,7 +55,7 @@ public class ProductsOnListService {
         return productsOnListMapper.toDto(updatedProductsOnList);
     }
 
-    public List<ProductsOnListDTO> addingAllProductsByRecipe(Long recipeId, Long shoppingListId) {
+    public List<ProductsOnListDTO> addingAllProductsFromRecipe(Long recipeId, Long shoppingListId) {
 
 
         List<Ingredients> ingredients = ingredientsService.getIngredientsByRecipeId(recipeId);
@@ -99,7 +90,6 @@ public class ProductsOnListService {
                     }
                 })
                 .collect(Collectors.toList());
-
 
 
         return productsOnListMapper.toDtoList(savedProductsOnList);
