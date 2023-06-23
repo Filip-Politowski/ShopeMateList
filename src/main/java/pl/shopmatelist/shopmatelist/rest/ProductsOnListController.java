@@ -19,14 +19,18 @@ public class ProductsOnListController {
         return productsOnListService.findById(id);
     }
 
-    @GetMapping("/productsonlist")
-    public List<ProductsOnListDTO> findAllProductsOnList(){
-        return productsOnListService.findAll();
+    @GetMapping("/productsonlist/all/{id}")
+    public List<ProductsOnListDTO> findAllProductsOnListByShoppingListId(@PathVariable Long id){
+        return productsOnListService.findAllByShoppingListId(id);
     }
 
     @PostMapping("/productsonlist")
     public ProductsOnListDTO createProductOnList(@RequestBody ProductsOnListDTO productsOnListDTO){
         return productsOnListService.save(productsOnListDTO);
+    }
+    @PostMapping("/productsonlist/recipe/{recipeId}/{shoppingListId}")
+    public List<ProductsOnListDTO> addAllProductsFromRecipe(@PathVariable Long recipeId, @PathVariable Long shoppingListId){
+        return productsOnListService.addingAllProductsFromRecipe(recipeId,shoppingListId);
     }
 
     @DeleteMapping("productsonlist/{id}")
