@@ -19,9 +19,9 @@ public class ProductsOnListController {
         return productsOnListService.findById(id);
     }
 
-    @GetMapping("/productsonlist")
-    public List<ProductsOnListDTO> findAllProductsOnList(){
-        return productsOnListService.findAll();
+    @GetMapping("/productsonlist/all/{id}")
+    public List<ProductsOnListDTO> findAllProductsOnListByShoppingListId(@PathVariable Long id){
+        return productsOnListService.findAllByShoppingListId(id);
     }
 
     @PostMapping("/productsonlist")
