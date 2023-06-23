@@ -1,12 +1,10 @@
 package pl.shopmatelist.shopmatelist.repository;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import pl.shopmatelist.shopmatelist.dto.ProductsDTO;
 import pl.shopmatelist.shopmatelist.entity.Ingredients;
 import pl.shopmatelist.shopmatelist.entity.Products;
-import pl.shopmatelist.shopmatelist.entity.ProductsOnList;
+
 
 import java.util.List;
 
