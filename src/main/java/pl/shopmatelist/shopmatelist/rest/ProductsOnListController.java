@@ -3,6 +3,7 @@ package pl.shopmatelist.shopmatelist.rest;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import pl.shopmatelist.shopmatelist.dto.ProductsOnListDTO;
+import pl.shopmatelist.shopmatelist.entity.ProductsOnList;
 import pl.shopmatelist.shopmatelist.services.ProductsOnListService;
 
 import java.util.List;
@@ -15,12 +16,12 @@ public class ProductsOnListController {
     private final ProductsOnListService productsOnListService;
 
     @GetMapping("/productsonlist/{id}")
-    public ProductsOnListDTO findProductsOnListById(@PathVariable Long id){
+    public ProductsOnList findProductsOnListById(@PathVariable Long id){
         return productsOnListService.findById(id);
     }
 
     @GetMapping("/productsonlist/all/{id}")
-    public List<ProductsOnListDTO> findAllProductsOnListByShoppingListId(@PathVariable Long id){
+    public List<ProductsOnList> findAllProductsOnListByShoppingListId(@PathVariable Long id){
         return productsOnListService.findAllByShoppingListId(id);
     }
 
