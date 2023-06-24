@@ -16,12 +16,12 @@ public class ProductsOnListController {
     private final ProductsOnListService productsOnListService;
 
     @GetMapping("/productsonlist/{id}")
-    public ProductsOnList findProductsOnListById(@PathVariable Long id){
+    public ProductsOnListDTO findProductsOnListById(@PathVariable Long id){
         return productsOnListService.findById(id);
     }
 
     @GetMapping("/productsonlist/all/{id}")
-    public List<ProductsOnList> findAllProductsOnListByShoppingListId(@PathVariable Long id){
+    public List<ProductsOnListDTO> findAllProductsOnListByShoppingListId(@PathVariable Long id){
         return productsOnListService.findAllByShoppingListId(id);
     }
 

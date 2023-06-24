@@ -29,6 +29,8 @@ public class ProductsOnListMapper {
         dto.setQuantity(productsOnList.getQuantity());
         dto.setProductId(productsOnList.getProduct().getProductId());
         dto.setShoppingListId(productsOnList.getShoppingList().getShoppingListId());
+        dto.setProductName(productsOnList.getProduct().getProductName());
+        dto.setProductType(productsOnList.getProduct().getCategory());
         return dto;
     }
 

@@ -27,16 +27,18 @@ public class ProductsOnListService {
     private final ShoppingListMapper shoppingListMapper;
 
 
-    public ProductsOnList findById(Long id) {
+    public ProductsOnListDTO findById(Long id) {
         Optional<ProductsOnList> optionalProductsOnList = productsOnListRepository.findById(id);
         if (optionalProductsOnList.isPresent()) {
-            return optionalProductsOnList.get();
+            ProductsOnList foundProductOnList = optionalProductsOnList.get();
+            return productsOnListMapper.toDto(foundProductOnList);
         }
         throw new NoSuchElementException();
     }
 
-    public List<ProductsOnList> findAllByShoppingListId(Long shoppingListId) {
-        return productsOnListRepository.findAllByShoppingListId(shoppingListId);
+    public List<ProductsOnListDTO> findAllByShoppingListId(Long shoppingListId) {
+        List<ProductsOnList> allFoundProductsOnList = productsOnListRepository.findAllByShoppingListId(shoppingListId);
+        return productsOnListMapper.toDtoList(allFoundProductsOnList);
     }
 
     public ProductsOnListDTO save(ProductsOnListDTO productsOnListDTO) {
