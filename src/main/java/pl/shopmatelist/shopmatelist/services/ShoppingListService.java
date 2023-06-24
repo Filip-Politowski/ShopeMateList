@@ -1,5 +1,6 @@
 package pl.shopmatelist.shopmatelist.services;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.shopmatelist.shopmatelist.dto.ShoppingListDTO;
 import pl.shopmatelist.shopmatelist.entity.ShoppingList;
@@ -11,15 +12,12 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class ShoppingListService {
 
     private final ShoppingListRepository shoppingListRepository;
     private final ShoppingListMapper shoppingListMapper;
 
-    public ShoppingListService(ShoppingListRepository shoppingListRepository, ShoppingListMapper shoppingListMapper) {
-        this.shoppingListRepository = shoppingListRepository;
-        this.shoppingListMapper = shoppingListMapper;
-    }
 
     public ShoppingListDTO findById(Long id) {
         Optional<ShoppingList> optionalShoppingList = shoppingListRepository.findById(id);

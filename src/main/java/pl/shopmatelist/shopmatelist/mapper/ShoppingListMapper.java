@@ -1,6 +1,7 @@
 package pl.shopmatelist.shopmatelist.mapper;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.shopmatelist.shopmatelist.dto.ShoppingListDTO;
@@ -13,14 +14,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@AllArgsConstructor
 public class ShoppingListMapper {
 
     private final MarketRepository marketRepository;
 
-    @Autowired
-    public ShoppingListMapper(MarketRepository marketRepository) {
-        this.marketRepository = marketRepository;
-    }
+
 
     public ShoppingListDTO toDTO(ShoppingList shoppingList) {
         ShoppingListDTO dto = new ShoppingListDTO();

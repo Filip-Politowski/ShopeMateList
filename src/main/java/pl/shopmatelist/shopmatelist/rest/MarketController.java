@@ -3,7 +3,6 @@ package pl.shopmatelist.shopmatelist.rest;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import pl.shopmatelist.shopmatelist.dto.MarketDTO;
-import pl.shopmatelist.shopmatelist.entity.Market;
 import pl.shopmatelist.shopmatelist.services.MarketService;
 
 import java.util.List;

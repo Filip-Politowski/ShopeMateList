@@ -1,5 +1,6 @@
 package pl.shopmatelist.shopmatelist.services;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.shopmatelist.shopmatelist.dto.IngredientsDTO;
@@ -14,16 +15,13 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class IngredientsService {
 
     private final IngredientsRepository ingredientsRepository;
     private final IngredientsMapper ingredientsMapper;
 
-    @Autowired
-    public IngredientsService(IngredientsRepository ingredientsRepository, IngredientsMapper ingredientsMapper) {
-        this.ingredientsRepository = ingredientsRepository;
-        this.ingredientsMapper = ingredientsMapper;
-    }
+
 
     public IngredientsDTO findById(Long id) {
         Optional<Ingredients> optionalIngredient = ingredientsRepository.findById(id);
