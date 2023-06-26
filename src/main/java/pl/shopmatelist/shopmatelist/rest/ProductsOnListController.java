@@ -3,7 +3,7 @@ package pl.shopmatelist.shopmatelist.rest;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import pl.shopmatelist.shopmatelist.dto.ProductsOnListDTO;
-import pl.shopmatelist.shopmatelist.entity.ProductsOnList;
+
 import pl.shopmatelist.shopmatelist.services.ProductsOnListService;
 
 import java.util.List;
@@ -16,12 +16,12 @@ public class ProductsOnListController {
     private final ProductsOnListService productsOnListService;
 
     @GetMapping("/productsonlist/{id}")
-    public ProductsOnList findProductsOnListById(@PathVariable Long id){
+    public ProductsOnListDTO findProductsOnListById(@PathVariable Long id){
         return productsOnListService.findById(id);
     }
 
     @GetMapping("/productsonlist/all/{id}")
-    public List<ProductsOnList> findAllProductsOnListByShoppingListId(@PathVariable Long id){
+    public List<ProductsOnListDTO> findAllProductsOnListByShoppingListId(@PathVariable Long id){
         return productsOnListService.findAllByShoppingListId(id);
     }
 
@@ -33,6 +33,12 @@ public class ProductsOnListController {
     public List<ProductsOnListDTO> addAllProductsFromRecipe(@PathVariable Long recipeId, @PathVariable Long shoppingListId){
         return productsOnListService.addingAllProductsFromRecipe(recipeId,shoppingListId);
     }
+
+    @PostMapping("/productsonlist/weeklyfoodplan/{foodPlanId}/{shoppingListId}")
+    public List<List<ProductsOnListDTO>> addAllProductsFromWeeklyFoodPlan(@PathVariable Long foodPlanId, @PathVariable Long shoppingListId){
+        return productsOnListService.addingProductsFromWeeklyPlan(foodPlanId,shoppingListId);
+    }
+
 
     @DeleteMapping("productsonlist/{id}")
     public void deleteProductsOnList(@PathVariable Long id){
