@@ -7,14 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class WeeklyFoodPlanDTO {
-
-    private Long weeklyFoodPlanId;
+public class FoodPlansDTO {
     private Long foodPlanId;
-    private String mealType;
-    private Long recipeId;
-    private String recipeName;
-
-
+    private String description;
 
 }
