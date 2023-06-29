@@ -4,13 +4,14 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.shopmatelist.shopmatelist.dto.ProductsOnListDTO;
 import pl.shopmatelist.shopmatelist.dto.ShoppingListDTO;
-import pl.shopmatelist.shopmatelist.entity.Ingredients;
-import pl.shopmatelist.shopmatelist.entity.ProductsOnList;
-import pl.shopmatelist.shopmatelist.entity.ShoppingList;
+import pl.shopmatelist.shopmatelist.dto.WeeklyFoodPlanDTO;
+import pl.shopmatelist.shopmatelist.entity.*;
 import pl.shopmatelist.shopmatelist.mapper.ProductsOnListMapper;
 import pl.shopmatelist.shopmatelist.mapper.ShoppingListMapper;
+import pl.shopmatelist.shopmatelist.mapper.WeeklyFoodPlanMapper;
 import pl.shopmatelist.shopmatelist.repository.ProductsOnListRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -25,20 +26,22 @@ public class ProductsOnListService {
     private final IngredientsService ingredientsService;
     private final ShoppingListService shoppingListService;
     private final ShoppingListMapper shoppingListMapper;
+    private final WeeklyFoodPlanService weeklyFoodPlanService;
+    private final WeeklyFoodPlanMapper weeklyFoodPlanMapper;
 
 
     public ProductsOnListDTO findById(Long id) {
         Optional<ProductsOnList> optionalProductsOnList = productsOnListRepository.findById(id);
         if (optionalProductsOnList.isPresent()) {
-            ProductsOnList productsOnList = optionalProductsOnList.get();
-            return productsOnListMapper.toDto(productsOnList);
+            ProductsOnList foundProductOnList = optionalProductsOnList.get();
+            return productsOnListMapper.toDto(foundProductOnList);
         }
         throw new NoSuchElementException();
     }
 
     public List<ProductsOnListDTO> findAllByShoppingListId(Long shoppingListId) {
-        List<ProductsOnList> productsOnLists = productsOnListRepository.findAllByShoppingListId(shoppingListId);
-        return productsOnListMapper.toDtoList(productsOnLists);
+        List<ProductsOnList> allFoundProductsOnList = productsOnListRepository.findAllByShoppingListId(shoppingListId);
+        return productsOnListMapper.toDtoList(allFoundProductsOnList);
     }
 
     public ProductsOnListDTO save(ProductsOnListDTO productsOnListDTO) {
@@ -48,9 +51,9 @@ public class ProductsOnListService {
         if (existingProduct.isPresent()) {
             ProductsOnList foundProduct = existingProduct.get();
 
-                foundProduct.setQuantity(foundProduct.getQuantity() + product.getQuantity());
-                ProductsOnList savedUpdatedProductOnList = productsOnListRepository.save(foundProduct);
-                return productsOnListMapper.toDto(savedUpdatedProductOnList);
+            foundProduct.setQuantity(foundProduct.getQuantity() + product.getQuantity());
+            ProductsOnList savedUpdatedProductOnList = productsOnListRepository.save(foundProduct);
+            return productsOnListMapper.toDto(savedUpdatedProductOnList);
 
         } else {
 
@@ -66,7 +69,7 @@ public class ProductsOnListService {
 
     public ProductsOnListDTO update(ProductsOnListDTO productsOnListDTO) {
         ProductsOnList product = productsOnListMapper.toEntity(productsOnListDTO);
-        Optional<ProductsOnList> existingProduct = productsOnListRepository.findByProductIdAndShoppingListId(product.getProduct().getProductId(),product.getShoppingList().getShoppingListId());
+        Optional<ProductsOnList> existingProduct = productsOnListRepository.findByProductIdAndShoppingListId(product.getProduct().getProductId(), product.getShoppingList().getShoppingListId());
 
         if (existingProduct.isPresent()) {
 
@@ -95,8 +98,7 @@ public class ProductsOnListService {
                     productsOnList.setProduct(ingredient.getProduct());
                     productsOnList.setQuantity(ingredient.getQuantity());
                     return productsOnList;
-                })
-                .collect(Collectors.toList());
+                }).toList();
 
         List<ProductsOnList> savedProductsOnList = productsOnLists.stream()
                 .map(productsOnList -> {
@@ -118,5 +120,23 @@ public class ProductsOnListService {
         return productsOnListMapper.toDtoList(savedProductsOnList);
     }
 
+    public List<List<ProductsOnListDTO>> addingProductsFromWeeklyPlan(Long foodPlanId, Long shoppingListId) {
+        List<WeeklyFoodPlanDTO> weeklyFoodPlansDTO = weeklyFoodPlanService.findAllByFoodPlanId(foodPlanId);
+        List<WeeklyFoodPlan> weeklyFoodPlans = weeklyFoodPlansDTO.stream()
+                .map(weeklyFoodPlanMapper::toEntity).toList();
 
+        List<Recipes> recipes = weeklyFoodPlans.stream()
+                .map(WeeklyFoodPlan::getRecipes).toList();
+
+
+        List<List<ProductsOnListDTO>> allProductsOnListDTOS = new ArrayList<>();
+
+        for (Recipes recipe : recipes) {
+            Long recipeId = recipe.getRecipeId();
+            List<ProductsOnListDTO> productsOnListDTOS = addingAllProductsFromRecipe(recipeId, shoppingListId);
+            allProductsOnListDTOS.add(productsOnListDTOS);
+        }
+        return allProductsOnListDTOS;
+
+    }
 }

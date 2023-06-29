@@ -12,6 +12,8 @@ public class ProductsOnListDTO {
     private Long listItemId;
     private Long shoppingListId;
     private Long productId;
+    private String productName;
+    private String productType;
     private int quantity;
 
 }

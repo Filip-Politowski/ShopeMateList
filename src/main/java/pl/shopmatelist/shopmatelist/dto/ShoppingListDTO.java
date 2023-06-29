@@ -12,6 +12,7 @@ import java.time.LocalDate;
 public class ShoppingListDTO {
     private Long shoppingListId;
     private Long marketId;
+    private String marketName;
     private LocalDate shoppingDate;
 
 }

@@ -1,5 +1,6 @@
 package pl.shopmatelist.shopmatelist.services;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.shopmatelist.shopmatelist.dto.MarketDTO;
@@ -12,16 +13,13 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class MarketService {
 
     private final MarketRepository marketRepository;
     private final MarketMapper marketMapper;
 
-    @Autowired
-    public MarketService(MarketRepository marketRepository, MarketMapper marketMapper) {
-        this.marketRepository = marketRepository;
-        this.marketMapper = marketMapper;
-    }
+
 
     public MarketDTO findById(Long id) {
         Optional<Market> optionalMarket = marketRepository.findById(id);
