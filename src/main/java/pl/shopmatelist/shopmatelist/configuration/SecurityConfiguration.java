@@ -18,7 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import pl.shopmatelist.shopmatelist.services.UserService;
 
-import java.io.IOException;
+
 
 @Configuration
 @EnableWebSecurity
