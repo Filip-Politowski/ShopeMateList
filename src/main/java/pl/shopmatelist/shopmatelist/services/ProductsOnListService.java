@@ -2,6 +2,7 @@ package pl.shopmatelist.shopmatelist.services;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import pl.shopmatelist.shopmatelist.dto.ProductsOnListDTO;
 import pl.shopmatelist.shopmatelist.dto.ShoppingListDTO;
 import pl.shopmatelist.shopmatelist.dto.WeeklyFoodPlanDTO;
@@ -10,6 +11,7 @@ import pl.shopmatelist.shopmatelist.mapper.ProductsOnListMapper;
 import pl.shopmatelist.shopmatelist.mapper.ShoppingListMapper;
 import pl.shopmatelist.shopmatelist.mapper.WeeklyFoodPlanMapper;
 import pl.shopmatelist.shopmatelist.repository.ProductsOnListRepository;
+import pl.shopmatelist.shopmatelist.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,7 @@ public class ProductsOnListService {
     private final ShoppingListMapper shoppingListMapper;
     private final WeeklyFoodPlanService weeklyFoodPlanService;
     private final WeeklyFoodPlanMapper weeklyFoodPlanMapper;
+
 
 
     public ProductsOnListDTO findById(Long id) {
@@ -139,4 +142,17 @@ public class ProductsOnListService {
         return allProductsOnListDTOS;
 
     }
+
+
 }
+/*
+produkty na listę dodawane są poprzez przepis i tygodniowy plan, nie potrzeba do tego użytkownika.
+ale każdy użytkownik powinien mieć swoje przepisy i swoje plany tygodniowe.
+każda lista zakupowa przydzielona jest do danego użytkownika
+każdy użytkownik powinien wyświetlać ylko swoje listy zakupowe.
+za każdym razem trzeba sprawdzać token czy sa poprawne dane.
+ogólnie brzmi jak od chuja pracy.
+
+
+
+*/

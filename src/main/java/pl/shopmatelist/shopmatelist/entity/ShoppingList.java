@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -24,4 +26,7 @@ public class ShoppingList {
 
     @Column(name = "shopping_date")
     private LocalDate shoppingDate;
+
+    @ManyToMany(mappedBy = "shoppingLists")
+    private Set<User> users = new HashSet<>();
 }
