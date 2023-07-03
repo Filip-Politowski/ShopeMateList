@@ -4,12 +4,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.shopmatelist.shopmatelist.dto.ShoppingListDTO;
 import pl.shopmatelist.shopmatelist.entity.ShoppingList;
+import pl.shopmatelist.shopmatelist.entity.User;
 import pl.shopmatelist.shopmatelist.mapper.ShoppingListMapper;
 import pl.shopmatelist.shopmatelist.repository.ShoppingListRepository;
+import pl.shopmatelist.shopmatelist.repository.UserRepository;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -17,6 +17,8 @@ public class ShoppingListService {
 
     private final ShoppingListRepository shoppingListRepository;
     private final ShoppingListMapper shoppingListMapper;
+    private final UserService userService;
+    private final UserRepository userRepository;
 
 
     public ShoppingListDTO findById(Long id) {
@@ -33,9 +35,16 @@ public class ShoppingListService {
         return shoppingListMapper.toDtoList(shoppingLists);
     }
 
-    public ShoppingListDTO save(ShoppingListDTO shoppingListDTO) {
+    public ShoppingListDTO save(ShoppingListDTO shoppingListDTO, String token) {
+
+        User user = userService.userFromToken(token);
+
         ShoppingList shoppingList = shoppingListMapper.toEntity(shoppingListDTO);
         ShoppingList savedShoppingList = shoppingListRepository.save(shoppingList);
+
+        user.addShoppingList(savedShoppingList);
+        userRepository.save(user);
+
         return shoppingListMapper.toDTO(savedShoppingList);
     }
 
@@ -48,5 +57,6 @@ public class ShoppingListService {
         ShoppingList updatedShoppingList = shoppingListRepository.save(shoppingList);
         return shoppingListMapper.toDTO(updatedShoppingList);
     }
+
 
 }

@@ -30,13 +30,17 @@ public class User implements UserDetails {
     private String password;
 
     @ManyToMany
-    @JoinTable(
-            name = "users_shopping_list",
+    @JoinTable(name = "user_shopping_list",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "shopping_list_id")
-    )
-    private Set<ShoppingList> shoppingLists = new HashSet<>();
+            inverseJoinColumns = @JoinColumn(name = "shopping_list_id"))
+    private Set<ShoppingList> shoppingLists;
 
+    public void addShoppingList(ShoppingList shoppingList) {
+        if(shoppingLists == null) {
+            shoppingLists = new HashSet<>();
+        }
+        shoppingLists.add(shoppingList);
+    }
 
     @Enumerated(EnumType.STRING)
     private Role role;

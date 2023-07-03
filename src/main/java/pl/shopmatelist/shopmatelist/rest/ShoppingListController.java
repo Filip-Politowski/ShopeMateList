@@ -24,8 +24,8 @@ public class ShoppingListController {
     }
 
     @PostMapping("/shoppinglist")
-    public ShoppingListDTO createShoppingList(@RequestBody ShoppingListDTO shoppingListDTO){
-        return shoppingListService.save(shoppingListDTO);
+    public ShoppingListDTO createShoppingList(@RequestBody ShoppingListDTO shoppingListDTO, @RequestHeader("Authorization")String token){
+        return shoppingListService.save(shoppingListDTO, token);
     }
 
     @DeleteMapping("/shoppinglist/{id}")

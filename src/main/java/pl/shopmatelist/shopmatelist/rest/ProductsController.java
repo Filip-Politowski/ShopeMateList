@@ -44,7 +44,7 @@ public class ProductsController {
 
     public ProductsDTO createProduct(@RequestBody ProductsDTO productsDTO, @RequestHeader("Authorization")String authorizationHeader) {
 
-        System.out.println(userService.idFromUserToken(authorizationHeader));
+        System.out.println(userService.userFromToken(authorizationHeader));
 
         return productsService.createProducts(productsDTO);
     }

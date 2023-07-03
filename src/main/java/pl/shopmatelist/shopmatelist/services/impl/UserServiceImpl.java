@@ -32,12 +32,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Integer idFromUserToken(String token) {
+    public User userFromToken(String token) {
         String email = jwtService.extractUserName(token.substring(7));
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            return user.getId();
+            return optionalUser.get();
         }
         throw new NoSuchElementException("Nie ma takiego użytkownika");
     }

@@ -1,8 +1,9 @@
 package pl.shopmatelist.shopmatelist.services;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
+import pl.shopmatelist.shopmatelist.entity.User;
 
 public interface UserService {
     UserDetailsService userDetailsService();
-    Integer idFromUserToken(String token);
+    User userFromToken(String token);
 }

@@ -30,6 +30,7 @@ public class ProductsOnListService {
     private final ShoppingListMapper shoppingListMapper;
     private final WeeklyFoodPlanService weeklyFoodPlanService;
     private final WeeklyFoodPlanMapper weeklyFoodPlanMapper;
+    private final UserService userService;
 
 
 
@@ -47,10 +48,9 @@ public class ProductsOnListService {
         return productsOnListMapper.toDtoList(allFoundProductsOnList);
     }
 
-    public ProductsOnListDTO save(ProductsOnListDTO productsOnListDTO) {
+    public ProductsOnListDTO save(ProductsOnListDTO productsOnListDTO, String token) {
         ProductsOnList product = productsOnListMapper.toEntity(productsOnListDTO);
         Optional<ProductsOnList> existingProduct = productsOnListRepository.findByProductIdAndShoppingListId(product.getProduct().getProductId(), product.getShoppingList().getShoppingListId());
-
         if (existingProduct.isPresent()) {
             ProductsOnList foundProduct = existingProduct.get();
 
