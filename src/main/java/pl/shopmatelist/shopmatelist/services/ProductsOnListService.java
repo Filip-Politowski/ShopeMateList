@@ -101,9 +101,27 @@ public class ProductsOnListService {
 
     }
 
-    public void deleteById(Long id) {
-        productsOnListRepository.deleteById(id);
+    public void deleteById(Long id, String token) {
+        User user = userService.userFromToken(token);
+        List<ShoppingList> userShoppingList = shoppingListRepository.findAllByUsers(user);
+        Optional<ProductsOnList> optionalProductsOnList = productsOnListRepository.findById(id);
+
+        boolean hasMatchingShoppingList = userShoppingList.stream()
+                .anyMatch(shoppingList -> shoppingList.getShoppingListId().equals(optionalProductsOnList.get().getShoppingList().getShoppingListId()));
+
+        if (optionalProductsOnList.isPresent()) {
+
+            if (hasMatchingShoppingList) {
+                productsOnListRepository.deleteById(id);
+            } else {
+                throw new AuthorizationServiceException("Brak uprawnień do usunięcia tego produktu");
+            }
+        } else {
+            throw new NoSuchElementException("Nie ma takiego produktu na liście");
+        }
     }
+
+
 
     public ProductsOnListDTO update(ProductsOnListDTO productsOnListDTO) {
         ProductsOnList product = productsOnListMapper.toEntity(productsOnListDTO);

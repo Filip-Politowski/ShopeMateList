@@ -41,8 +41,8 @@ public class ProductsOnListController {
 
 
     @DeleteMapping("/{id}")
-    public void deleteProductsOnList(@PathVariable Long id){
-        productsOnListService.deleteById(id);
+    public void deleteProductsOnList(@PathVariable Long id,  @RequestHeader("Authorization")String token){
+        productsOnListService.deleteById(id, token);
     }
 
     @PutMapping()
