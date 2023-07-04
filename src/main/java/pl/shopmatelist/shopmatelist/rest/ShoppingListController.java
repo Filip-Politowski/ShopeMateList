@@ -19,8 +19,8 @@ public class ShoppingListController {
         return shoppingListService.findById(id);
     }
     @GetMapping("/shoppinglist")
-    public List<ShoppingListDTO> findAllShoppingLists(){
-        return shoppingListService.findAll();
+    public List<ShoppingListDTO> findAllShoppingLists(@RequestHeader("Authorization")String token){
+        return shoppingListService.findAll(token);
     }
 
     @PostMapping("/shoppinglist")
@@ -29,8 +29,8 @@ public class ShoppingListController {
     }
 
     @DeleteMapping("/shoppinglist/{id}")
-    public void deleteShoppingList(@PathVariable Long id){
-        shoppingListService.deleteById(id);
+    public void deleteShoppingList(@PathVariable Long id, @RequestHeader("Authorization")String token){
+        shoppingListService.deleteById(id, token);
     }
 
     @PutMapping("/shoppinglist")

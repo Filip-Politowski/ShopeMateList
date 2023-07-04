@@ -30,8 +30,9 @@ public class ShoppingListService {
         throw new NoSuchElementException();
     }
 
-    public List<ShoppingListDTO> findAll() {
-        List<ShoppingList> shoppingLists = shoppingListRepository.findAll();
+    public List<ShoppingListDTO> findAll(String token) {
+        User user = userService.userFromToken(token);
+        List<ShoppingList> shoppingLists = shoppingListRepository.findAllByUsers(user);
         return shoppingListMapper.toDtoList(shoppingLists);
     }
 
@@ -48,9 +49,14 @@ public class ShoppingListService {
         return shoppingListMapper.toDTO(savedShoppingList);
     }
 
-    public void deleteById(Long id) {
-        shoppingListRepository.deleteById(id);
+    public void deleteById(Long id, String token) {
+        User user = userService.userFromToken(token);
+        ShoppingList shoppingList = shoppingListRepository.findByShoppingListIdAndUsers(id, user);
+        user.getShoppingLists().remove(shoppingList);
+        userRepository.save(user);
+        shoppingListRepository.delete(shoppingList);
     }
+
 
     public ShoppingListDTO update(ShoppingListDTO shoppingListDTO) {
         ShoppingList shoppingList = shoppingListMapper.toEntity(shoppingListDTO);
