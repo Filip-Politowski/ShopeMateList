@@ -46,8 +46,8 @@ public class ProductsOnListController {
     }
 
     @PutMapping()
-    public ProductsOnListDTO updateProductOnList(@RequestBody ProductsOnListDTO productsOnListDTO){
-        return productsOnListService.update(productsOnListDTO);
+    public ProductsOnListDTO updateProductOnList(@RequestBody ProductsOnListDTO productsOnListDTO,  @RequestHeader("Authorization")String token){
+        return productsOnListService.update(productsOnListDTO, token);
     }
 
 

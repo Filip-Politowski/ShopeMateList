@@ -122,23 +122,32 @@ public class ProductsOnListService {
     }
 
 
+    public ProductsOnListDTO update(ProductsOnListDTO productsOnListDTO, String token) {
 
-    public ProductsOnListDTO update(ProductsOnListDTO productsOnListDTO) {
         ProductsOnList product = productsOnListMapper.toEntity(productsOnListDTO);
         Optional<ProductsOnList> existingProduct = productsOnListRepository.findByProductIdAndShoppingListId(product.getProduct().getProductId(), product.getShoppingList().getShoppingListId());
 
-        if (existingProduct.isPresent()) {
+        User user = userService.userFromToken(token);
+        List<ShoppingList> userShoppingList = shoppingListRepository.findAllByUsers(user);
 
-            ProductsOnList foundProduct = existingProduct.get();
-            foundProduct.setQuantity(product.getQuantity());
-            ProductsOnList savedUpdatedProductOnList = productsOnListRepository.save(foundProduct);
-            return productsOnListMapper.toDto(savedUpdatedProductOnList);
+        boolean hasMatchingShoppingList = userShoppingList.stream()
+                .anyMatch(shoppingList -> shoppingList.getShoppingListId().equals(product.getShoppingList().getShoppingListId()));
+
+        if (hasMatchingShoppingList) {
+            if (existingProduct.isPresent()) {
+
+                ProductsOnList savedProductOnList = productsOnListRepository.save(product);
+                return productsOnListMapper.toDto(savedProductOnList);
+
+            }
+            throw new NoSuchElementException("Nie ma takiego produktu na liście");
         } else {
-
-            throw new NoSuchElementException("Nie da się zaktualizować produktu, którego nie ma");
+            throw new AuthorizationServiceException("Brak uprawnień do aktualizacji tego produktu");
         }
-
     }
+
+
+
 
     public List<ProductsOnListDTO> addingAllProductsFromRecipe(Long recipeId, Long shoppingListId, String token) {
 
