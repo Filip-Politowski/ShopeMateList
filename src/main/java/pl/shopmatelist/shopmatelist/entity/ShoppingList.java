@@ -29,16 +29,14 @@ public class ShoppingList {
     @Column(name = "shopping_date")
     private LocalDate shoppingDate;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @ManyToMany(mappedBy = "shoppingLists")
-    private Set<User> users;
+    @Column(name = "owner")
+    private Boolean owner;
 
-    public void addUser(User user) {
-        if(users == null) {
-            users = new HashSet<>();
-        }
-        users.add(user);
-    }
+
 
 
 }

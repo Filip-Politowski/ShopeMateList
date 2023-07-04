@@ -39,7 +39,7 @@ public class ProductsOnListService {
     public ProductsOnListDTO findById(Long id, String token) {
         User user = userService.userFromToken(token);
         Optional<ProductsOnList> optionalProductsOnList = productsOnListRepository.findById(id);
-        List<ShoppingList> userShoppingLists = shoppingListRepository.findAllByUsers(user);
+        List<ShoppingList> userShoppingLists = shoppingListRepository.findAllByUser(user);
 
         boolean hasMatchingShoppingList = userShoppingLists.stream()
                 .anyMatch(shoppingList -> shoppingList.getShoppingListId().equals(optionalProductsOnList.get().getShoppingList().getShoppingListId()));
@@ -58,7 +58,7 @@ public class ProductsOnListService {
 
     public List<ProductsOnListDTO> findAllByShoppingListId(Long shoppingListId, String token) {
         User user = userService.userFromToken(token);
-        List<ShoppingList> userShoppingLists = shoppingListRepository.findAllByUsers(user);
+        List<ShoppingList> userShoppingLists = shoppingListRepository.findAllByUser(user);
         boolean hasMatchingShoppingList = userShoppingLists.stream()
                 .anyMatch(shoppingList -> shoppingList.getShoppingListId().equals(shoppingListId));
         if (hasMatchingShoppingList) {
@@ -75,7 +75,7 @@ public class ProductsOnListService {
         Optional<ProductsOnList> existingProduct = productsOnListRepository.findByProductIdAndShoppingListId(product.getProduct().getProductId(), product.getShoppingList().getShoppingListId());
 
         User user = userService.userFromToken(token);
-        List<ShoppingList> userShoppingList = shoppingListRepository.findAllByUsers(user);
+        List<ShoppingList> userShoppingList = shoppingListRepository.findAllByUser(user);
 
         boolean hasMatchingShoppingList = userShoppingList.stream()
                 .anyMatch(shoppingList -> shoppingList.getShoppingListId().equals(product.getShoppingList().getShoppingListId()));
@@ -103,7 +103,7 @@ public class ProductsOnListService {
 
     public void deleteById(Long id, String token) {
         User user = userService.userFromToken(token);
-        List<ShoppingList> userShoppingList = shoppingListRepository.findAllByUsers(user);
+        List<ShoppingList> userShoppingList = shoppingListRepository.findAllByUser(user);
         Optional<ProductsOnList> optionalProductsOnList = productsOnListRepository.findById(id);
 
         boolean hasMatchingShoppingList = userShoppingList.stream()
@@ -128,7 +128,7 @@ public class ProductsOnListService {
         Optional<ProductsOnList> existingProduct = productsOnListRepository.findByProductIdAndShoppingListId(product.getProduct().getProductId(), product.getShoppingList().getShoppingListId());
 
         User user = userService.userFromToken(token);
-        List<ShoppingList> userShoppingList = shoppingListRepository.findAllByUsers(user);
+        List<ShoppingList> userShoppingList = shoppingListRepository.findAllByUser(user);
 
         boolean hasMatchingShoppingList = userShoppingList.stream()
                 .anyMatch(shoppingList -> shoppingList.getShoppingListId().equals(product.getShoppingList().getShoppingListId()));

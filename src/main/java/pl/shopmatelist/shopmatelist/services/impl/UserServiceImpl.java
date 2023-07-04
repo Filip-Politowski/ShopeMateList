@@ -41,4 +41,16 @@ public class UserServiceImpl implements UserService {
         throw new NoSuchElementException("Nie ma takiego użytkownika");
     }
 
+    @Override
+    public User findByUserId(Long id) {
+       Optional<User> user = userRepository.findById(id);
+       if(user.isPresent()){
+           return user.get();
+       }else{
+           throw new NoSuchElementException("Nie ma takiego użytkownika");
+       }
+
+    }
+
+
 }

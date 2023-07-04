@@ -7,7 +7,7 @@ import pl.shopmatelist.shopmatelist.entity.User;
 import java.util.List;
 
 public interface ShoppingListRepository extends JpaRepository<ShoppingList, Long> {
-    List<ShoppingList> findAllByUsers(User user);
-    ShoppingList findByShoppingListIdAndUsers(Long id, User user);
+    List<ShoppingList> findAllByUser(User user);
+    ShoppingList findByShoppingListIdAndUser(Long id, User user);
 
 }
