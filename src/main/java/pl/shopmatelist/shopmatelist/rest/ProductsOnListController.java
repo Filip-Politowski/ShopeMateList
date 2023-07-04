@@ -10,44 +10,44 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/products-on-list")
 public class ProductsOnListController {
 
     private final ProductsOnListService productsOnListService;
 
-    @GetMapping("/productsonlist/{id}")
-    public ProductsOnListDTO findProductsOnListById(@PathVariable Long id){
-        return productsOnListService.findById(id);
+    @GetMapping("/{id}")
+    public ProductsOnListDTO findProductsOnListById(@PathVariable Long id, @RequestHeader("Authorization")String token){
+        return productsOnListService.findById(id, token);
     }
 
-    @GetMapping("/productsonlist/all/{id}")
-    public List<ProductsOnListDTO> findAllProductsOnListByShoppingListId(@PathVariable Long id){
-        return productsOnListService.findAllByShoppingListId(id);
+    @GetMapping("/all/shopping-list/{id}")
+    public List<ProductsOnListDTO> findAllProductsOnListByShoppingListId(@PathVariable Long id, @RequestHeader("Authorization")String token){
+        return productsOnListService.findAllByShoppingListId(id, token);
     }
 
-    @PostMapping("/productsonlist")
-    public ProductsOnListDTO createProductOnList(@RequestBody ProductsOnListDTO productsOnListDTO){
-        return productsOnListService.save(productsOnListDTO);
+    @PostMapping()
+    public ProductsOnListDTO createProductOnList(@RequestBody ProductsOnListDTO productsOnListDTO, @RequestHeader("Authorization")String token){
+        return productsOnListService.save(productsOnListDTO, token);
     }
-    @PostMapping("/productsonlist/recipe/{recipeId}/{shoppingListId}")
-    public List<ProductsOnListDTO> addAllProductsFromRecipe(@PathVariable Long recipeId, @PathVariable Long shoppingListId){
-        return productsOnListService.addingAllProductsFromRecipe(recipeId,shoppingListId);
-    }
-
-    @PostMapping("/productsonlist/weeklyfoodplan/{foodPlanId}/{shoppingListId}")
-    public List<List<ProductsOnListDTO>> addAllProductsFromWeeklyFoodPlan(@PathVariable Long foodPlanId, @PathVariable Long shoppingListId){
-        return productsOnListService.addingProductsFromWeeklyPlan(foodPlanId,shoppingListId);
+    @PostMapping("/recipe/{recipeId}/{shoppingListId}")
+    public List<ProductsOnListDTO> addAllProductsFromRecipe(@PathVariable Long recipeId, @PathVariable Long shoppingListId, @RequestHeader("Authorization")String token){
+        return productsOnListService.addingAllProductsFromRecipe(recipeId,shoppingListId, token);
     }
 
-
-    @DeleteMapping("productsonlist/{id}")
-    public void deleteProductsOnList(@PathVariable Long id){
-        productsOnListService.deleteById(id);
+    @PostMapping("/weekly-food-plan/{foodPlanId}/{shoppingListId}")
+    public List<List<ProductsOnListDTO>> addAllProductsFromWeeklyFoodPlan(@PathVariable Long foodPlanId, @PathVariable Long shoppingListId, @RequestHeader("Authorization")String token){
+        return productsOnListService.addingProductsFromWeeklyPlan(foodPlanId,shoppingListId, token);
     }
 
-    @PutMapping("/productsonlist")
-    public ProductsOnListDTO updateProductOnList(@RequestBody ProductsOnListDTO productsOnListDTO){
-        return productsOnListService.update(productsOnListDTO);
+
+    @DeleteMapping("/{id}")
+    public void deleteProductsOnList(@PathVariable Long id,  @RequestHeader("Authorization")String token){
+        productsOnListService.deleteById(id, token);
+    }
+
+    @PutMapping()
+    public ProductsOnListDTO updateProductOnList(@RequestBody ProductsOnListDTO productsOnListDTO,  @RequestHeader("Authorization")String token){
+        return productsOnListService.update(productsOnListDTO, token);
     }
 
 

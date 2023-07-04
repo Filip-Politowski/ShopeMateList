@@ -6,11 +6,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "shopping_list")
 public class ShoppingList {
 
     @Id
@@ -24,4 +28,15 @@ public class ShoppingList {
 
     @Column(name = "shopping_date")
     private LocalDate shoppingDate;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @Column(name = "owner")
+    private Boolean owner;
+
+
+
+
 }

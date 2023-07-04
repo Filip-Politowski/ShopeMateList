@@ -27,6 +27,8 @@ public class ShoppingListMapper {
         dto.setMarketId(shoppingList.getMarket().getMarketId());
         dto.setShoppingDate(shoppingList.getShoppingDate());
         dto.setMarketName(shoppingList.getMarket().getMarketName());
+        dto.setOwner(shoppingList.getOwner());
+        dto.setUser(shoppingList.getUser().getId());
         return dto;
     }
 

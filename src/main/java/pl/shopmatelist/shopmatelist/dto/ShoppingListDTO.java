@@ -14,5 +14,7 @@ public class ShoppingListDTO {
     private Long marketId;
     private String marketName;
     private LocalDate shoppingDate;
+    private Boolean owner;
+    private Integer User;
 
 }

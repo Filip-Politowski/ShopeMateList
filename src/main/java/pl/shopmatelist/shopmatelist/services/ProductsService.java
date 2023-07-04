@@ -3,10 +3,12 @@ package pl.shopmatelist.shopmatelist.services;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import pl.shopmatelist.shopmatelist.dto.ProductsDTO;
 import pl.shopmatelist.shopmatelist.entity.Products;
 import pl.shopmatelist.shopmatelist.mapper.ProductsMapper;
 import pl.shopmatelist.shopmatelist.repository.ProductsRepository;
+import pl.shopmatelist.shopmatelist.repository.UserRepository;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -18,6 +20,9 @@ public class ProductsService {
 
     private final ProductsRepository productsRepository;
     private final ProductsMapper productsMapper;
+    private final JwtService jwtService;
+    private final UserRepository userRepository;
+
 
 
     public ProductsDTO findById(Long id){
@@ -50,6 +55,7 @@ public class ProductsService {
         Products updatedProduct = productsRepository.save(product);
         return productsMapper.toDTO(updatedProduct);
     }
+
 
 
 
