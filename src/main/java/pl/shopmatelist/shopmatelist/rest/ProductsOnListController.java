@@ -26,8 +26,8 @@ public class ProductsOnListController {
     }
 
     @PostMapping()
-    public ProductsOnListDTO createProductOnList(@RequestBody ProductsOnListDTO productsOnListDTO, @RequestHeader("Authorization")String authorizationHeader){
-        return productsOnListService.save(productsOnListDTO,authorizationHeader);
+    public ProductsOnListDTO createProductOnList(@RequestBody ProductsOnListDTO productsOnListDTO, @RequestHeader("Authorization")String token){
+        return productsOnListService.save(productsOnListDTO, token);
     }
     @PostMapping("/recipe/{recipeId}/{shoppingListId}")
     public List<ProductsOnListDTO> addAllProductsFromRecipe(@PathVariable Long recipeId, @PathVariable Long shoppingListId, @RequestHeader("Authorization")String token){

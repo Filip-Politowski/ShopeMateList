@@ -61,7 +61,7 @@ public class ProductsOnListService {
         List<ShoppingList> userShoppingLists = shoppingListRepository.findAllByUsers(user);
         boolean hasMatchingShoppingList = userShoppingLists.stream()
                 .anyMatch(shoppingList -> shoppingList.getShoppingListId().equals(shoppingListId));
-        if(hasMatchingShoppingList){
+        if (hasMatchingShoppingList) {
             List<ProductsOnList> allFoundProductsOnList = productsOnListRepository.findAllByShoppingListId(shoppingListId);
             return productsOnListMapper.toDtoList(allFoundProductsOnList);
         }
@@ -70,20 +70,34 @@ public class ProductsOnListService {
     }
 
     public ProductsOnListDTO save(ProductsOnListDTO productsOnListDTO, String token) {
+
         ProductsOnList product = productsOnListMapper.toEntity(productsOnListDTO);
         Optional<ProductsOnList> existingProduct = productsOnListRepository.findByProductIdAndShoppingListId(product.getProduct().getProductId(), product.getShoppingList().getShoppingListId());
-        if (existingProduct.isPresent()) {
-            ProductsOnList foundProduct = existingProduct.get();
 
-            foundProduct.setQuantity(foundProduct.getQuantity() + product.getQuantity());
-            ProductsOnList savedUpdatedProductOnList = productsOnListRepository.save(foundProduct);
-            return productsOnListMapper.toDto(savedUpdatedProductOnList);
+        User user = userService.userFromToken(token);
+        List<ShoppingList> userShoppingList = shoppingListRepository.findAllByUsers(user);
 
+        boolean hasMatchingShoppingList = userShoppingList.stream()
+                .anyMatch(shoppingList -> shoppingList.getShoppingListId().equals(product.getShoppingList().getShoppingListId()));
+
+        if (hasMatchingShoppingList) {
+            if (existingProduct.isPresent()) {
+
+                ProductsOnList foundProduct = existingProduct.get();
+
+                foundProduct.setQuantity(foundProduct.getQuantity() + product.getQuantity());
+                ProductsOnList savedUpdatedProductOnList = productsOnListRepository.save(foundProduct);
+                return productsOnListMapper.toDto(savedUpdatedProductOnList);
+
+            } else {
+                ProductsOnList savedProductOnList = productsOnListRepository.save(product);
+                return productsOnListMapper.toDto(savedProductOnList);
+
+            }
         } else {
-
-            ProductsOnList savedProductOnList = productsOnListRepository.save(product);
-            return productsOnListMapper.toDto(savedProductOnList);
+            throw new AuthorizationServiceException("Brak uprawnień do zapisania tego produktu");
         }
+
 
     }
 
