@@ -9,32 +9,32 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/food-plans")
 public class FoodPlansController {
 
     private final FoodPlansService foodPlansService;
 
-    @GetMapping("/foodplans/{id}")
+    @GetMapping("/{id}")
     public FoodPlansDTO FindFoodPlanById(@PathVariable Long id){
         return foodPlansService.findById(id);
     }
 
-    @GetMapping("/foodplans")
+    @GetMapping()
     public List<FoodPlansDTO> findAllFoodPlans(){
         return foodPlansService.findAll();
     }
 
-    @PostMapping("/foodplans")
+    @PostMapping()
     public FoodPlansDTO createFoodPlan(@RequestBody FoodPlansDTO foodPlansDTO){
         return foodPlansService.save(foodPlansDTO);
     }
 
-    @DeleteMapping("/foodplans/{id}")
+    @DeleteMapping("/{id}")
     public void deleteFoodPlanById(@PathVariable Long id){
         foodPlansService.delete(id);
     }
 
-    @PutMapping("/foodplans")
+    @PutMapping()
     public FoodPlansDTO updateFoodPlan(FoodPlansDTO foodPlansDTO){
         return foodPlansService.update(foodPlansDTO);
     }

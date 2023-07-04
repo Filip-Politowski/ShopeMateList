@@ -8,7 +8,7 @@ import pl.shopmatelist.shopmatelist.services.RecipesService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/recipe")
 public class RecipesController {
 
     private final RecipesService recipesService;
@@ -18,22 +18,22 @@ public class RecipesController {
         this.recipesService = recipesService;
     }
 
-    @GetMapping("/recipes/{id}")
+    @GetMapping("/{id}")
     public RecipesDTO findRecipeById(@PathVariable Long id){
         return recipesService.findById(id);
     }
 
-    @GetMapping("/recipes")
+    @GetMapping()
     public List<RecipesDTO> findAllRecipes(){
         return recipesService.findAll();
     }
 
-    @PostMapping("/recipes")
+    @PostMapping()
     public RecipesDTO createRecipes(@RequestBody RecipesDTO recipesDTO) {
         return  recipesService.createRecipes(recipesDTO);
     }
 
-    @DeleteMapping("/recipes/{id}")
+    @DeleteMapping("/{id}")
     public void deleteRecipesById(@PathVariable Long id){
         recipesService.deleteById(id);
     }

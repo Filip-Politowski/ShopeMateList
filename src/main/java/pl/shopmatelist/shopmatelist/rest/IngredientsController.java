@@ -8,7 +8,7 @@ import pl.shopmatelist.shopmatelist.services.IngredientsService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/ingredients")
 public class IngredientsController {
 
     private final IngredientsService ingredientsService;
@@ -18,27 +18,27 @@ public class IngredientsController {
         this.ingredientsService = ingredientsService;
     }
 
-    @GetMapping("/ingredients/{id}")
+    @GetMapping("/{id}")
     public IngredientsDTO findIngredientById(@PathVariable Long id){
         return ingredientsService.findById(id);
     }
 
-    @GetMapping("/ingredients")
+    @GetMapping()
     public List<IngredientsDTO>findAllIngredients(){
         return ingredientsService.findAll();
     }
 
-    @PostMapping("/ingredients")
+    @PostMapping()
     public IngredientsDTO createIngredient(@RequestBody IngredientsDTO ingredientsDTO) {
         return  ingredientsService.save(ingredientsDTO);
     }
 
-    @DeleteMapping("/ingredients/{id}")
+    @DeleteMapping("/{id}")
     public void deleteIngredientById(@PathVariable Long id){
         ingredientsService.deleteById(id);
     }
 
-    @PutMapping("/ingredients")
+    @PutMapping()
     public IngredientsDTO updateIngredient(@RequestBody IngredientsDTO ingredientsDTO){
         return ingredientsService.update(ingredientsDTO);
     }

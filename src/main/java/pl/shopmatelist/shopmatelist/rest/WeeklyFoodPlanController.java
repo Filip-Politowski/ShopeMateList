@@ -9,36 +9,36 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/weekly-food-plan")
 public class WeeklyFoodPlanController {
 
     private final WeeklyFoodPlanService weeklyFoodPlanService;
 
-    @GetMapping("/weeklyfoodplan/{id}")
+    @GetMapping("/{id}")
     public WeeklyFoodPlanDTO findWeeklyFoodPlanById(@PathVariable Long id){
         return weeklyFoodPlanService.findById(id);
     }
-    @GetMapping("/weeklyfoodplan")
+    @GetMapping()
     public List<WeeklyFoodPlanDTO> findAllWeeklyFoodPlans(){
         return weeklyFoodPlanService.findAll();
     }
 
-    @GetMapping("/weeklyfoodplan/all/{id}")
+    @GetMapping("/all/{id}")
     public List<WeeklyFoodPlanDTO> findAllWeeklyFoodPlansById(@PathVariable Long id){
         return weeklyFoodPlanService.findAllByFoodPlanId(id);
     }
 
-    @PostMapping("/weeklyfoodplan")
+    @PostMapping()
     public WeeklyFoodPlanDTO createWeeklyFoodPlan(@RequestBody WeeklyFoodPlanDTO weeklyFoodPlanDTO){
         return weeklyFoodPlanService.save(weeklyFoodPlanDTO);
     }
 
-    @DeleteMapping("/weeklyfoodplan/{id}")
+    @DeleteMapping("/{id}")
     public void deleteWeeklyFoodPlan(@PathVariable Long id){
         weeklyFoodPlanService.deleteById(id);
     }
 
-    @PutMapping("/weeklyfoodplan")
+    @PutMapping()
     public WeeklyFoodPlanDTO updateWeeklyFoodPlan(@RequestBody WeeklyFoodPlanDTO weeklyFoodPlanDTO){
         return weeklyFoodPlanService.update(weeklyFoodPlanDTO);
     }
