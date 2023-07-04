@@ -21,8 +21,8 @@ public class ProductsOnListController {
     }
 
     @GetMapping("/all/shopping-list/{id}")
-    public List<ProductsOnListDTO> findAllProductsOnListByShoppingListId(@PathVariable Long id){
-        return productsOnListService.findAllByShoppingListId(id);
+    public List<ProductsOnListDTO> findAllProductsOnListByShoppingListId(@PathVariable Long id, @RequestHeader("Authorization")String token){
+        return productsOnListService.findAllByShoppingListId(id, token);
     }
 
     @PostMapping()

@@ -56,9 +56,17 @@ public class ProductsOnListService {
         throw new NoSuchElementException("Nie ma takiego elementu na liście");
     }
 
-    public List<ProductsOnListDTO> findAllByShoppingListId(Long shoppingListId) {
-        List<ProductsOnList> allFoundProductsOnList = productsOnListRepository.findAllByShoppingListId(shoppingListId);
-        return productsOnListMapper.toDtoList(allFoundProductsOnList);
+    public List<ProductsOnListDTO> findAllByShoppingListId(Long shoppingListId, String token) {
+        User user = userService.userFromToken(token);
+        List<ShoppingList> userShoppingLists = shoppingListRepository.findAllByUsers(user);
+        boolean hasMatchingShoppingList = userShoppingLists.stream()
+                .anyMatch(shoppingList -> shoppingList.getShoppingListId().equals(shoppingListId));
+        if(hasMatchingShoppingList){
+            List<ProductsOnList> allFoundProductsOnList = productsOnListRepository.findAllByShoppingListId(shoppingListId);
+            return productsOnListMapper.toDtoList(allFoundProductsOnList);
+        }
+        throw new AuthorizationServiceException("Brak uprawnień do zobaczenia tych produktu");
+
     }
 
     public ProductsOnListDTO save(ProductsOnListDTO productsOnListDTO, String token) {
