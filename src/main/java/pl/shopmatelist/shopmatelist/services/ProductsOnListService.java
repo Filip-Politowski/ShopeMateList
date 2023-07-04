@@ -1,6 +1,7 @@
 package pl.shopmatelist.shopmatelist.services;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
 
 import pl.shopmatelist.shopmatelist.dto.ProductsOnListDTO;
@@ -11,7 +12,8 @@ import pl.shopmatelist.shopmatelist.mapper.ProductsOnListMapper;
 import pl.shopmatelist.shopmatelist.mapper.ShoppingListMapper;
 import pl.shopmatelist.shopmatelist.mapper.WeeklyFoodPlanMapper;
 import pl.shopmatelist.shopmatelist.repository.ProductsOnListRepository;
-import pl.shopmatelist.shopmatelist.repository.UserRepository;
+import pl.shopmatelist.shopmatelist.repository.ShoppingListRepository;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,16 +33,27 @@ public class ProductsOnListService {
     private final WeeklyFoodPlanService weeklyFoodPlanService;
     private final WeeklyFoodPlanMapper weeklyFoodPlanMapper;
     private final UserService userService;
+    private final ShoppingListRepository shoppingListRepository;
 
 
-
-    public ProductsOnListDTO findById(Long id) {
+    public ProductsOnListDTO findById(Long id, String token) {
+        User user = userService.userFromToken(token);
         Optional<ProductsOnList> optionalProductsOnList = productsOnListRepository.findById(id);
+        List<ShoppingList> userShoppingLists = shoppingListRepository.findAllByUsers(user);
+
+        boolean hasMatchingShoppingList = userShoppingLists.stream()
+                .anyMatch(shoppingList -> shoppingList.getShoppingListId().equals(optionalProductsOnList.get().getShoppingList().getShoppingListId()));
+
         if (optionalProductsOnList.isPresent()) {
-            ProductsOnList foundProductOnList = optionalProductsOnList.get();
-            return productsOnListMapper.toDto(foundProductOnList);
+
+            if (hasMatchingShoppingList) {
+                ProductsOnList foundProductOnList = optionalProductsOnList.get();
+                return productsOnListMapper.toDto(foundProductOnList);
+            } else {
+                throw new AuthorizationServiceException("Brak uprawnień do zobaczenia tego produktu");
+            }
         }
-        throw new NoSuchElementException();
+        throw new NoSuchElementException("Nie ma takiego elementu na liście");
     }
 
     public List<ProductsOnListDTO> findAllByShoppingListId(Long shoppingListId) {

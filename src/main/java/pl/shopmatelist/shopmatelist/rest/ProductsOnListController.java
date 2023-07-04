@@ -16,8 +16,8 @@ public class ProductsOnListController {
     private final ProductsOnListService productsOnListService;
 
     @GetMapping("/{id}")
-    public ProductsOnListDTO findProductsOnListById(@PathVariable Long id){
-        return productsOnListService.findById(id);
+    public ProductsOnListDTO findProductsOnListById(@PathVariable Long id, @RequestHeader("Authorization")String token){
+        return productsOnListService.findById(id, token);
     }
 
     @GetMapping("/all/shopping-list/{id}")
