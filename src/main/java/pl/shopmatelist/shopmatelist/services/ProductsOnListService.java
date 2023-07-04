@@ -87,10 +87,10 @@ public class ProductsOnListService {
 
     }
 
-    public List<ProductsOnListDTO> addingAllProductsFromRecipe(Long recipeId, Long shoppingListId) {
+    public List<ProductsOnListDTO> addingAllProductsFromRecipe(Long recipeId, Long shoppingListId, String token) {
 
         List<Ingredients> ingredients = ingredientsService.getIngredientsByRecipeId(recipeId);
-        ShoppingListDTO shoppingListDto = shoppingListService.findById(shoppingListId);
+        ShoppingListDTO shoppingListDto = shoppingListService.findById(shoppingListId, token);
         ShoppingList shoppingList = shoppingListMapper.toEntity(shoppingListDto);
 
 
@@ -123,7 +123,7 @@ public class ProductsOnListService {
         return productsOnListMapper.toDtoList(savedProductsOnList);
     }
 
-    public List<List<ProductsOnListDTO>> addingProductsFromWeeklyPlan(Long foodPlanId, Long shoppingListId) {
+    public List<List<ProductsOnListDTO>> addingProductsFromWeeklyPlan(Long foodPlanId, Long shoppingListId, String token) {
         List<WeeklyFoodPlanDTO> weeklyFoodPlansDTO = weeklyFoodPlanService.findAllByFoodPlanId(foodPlanId);
         List<WeeklyFoodPlan> weeklyFoodPlans = weeklyFoodPlansDTO.stream()
                 .map(weeklyFoodPlanMapper::toEntity).toList();
@@ -136,7 +136,7 @@ public class ProductsOnListService {
 
         for (Recipes recipe : recipes) {
             Long recipeId = recipe.getRecipeId();
-            List<ProductsOnListDTO> productsOnListDTOS = addingAllProductsFromRecipe(recipeId, shoppingListId);
+            List<ProductsOnListDTO> productsOnListDTOS = addingAllProductsFromRecipe(recipeId, shoppingListId, token);
             allProductsOnListDTOS.add(productsOnListDTOS);
         }
         return allProductsOnListDTOS;
@@ -145,14 +145,3 @@ public class ProductsOnListService {
 
 
 }
-/*
-produkty na listę dodawane są poprzez przepis i tygodniowy plan, nie potrzeba do tego użytkownika.
-ale każdy użytkownik powinien mieć swoje przepisy i swoje plany tygodniowe.
-każda lista zakupowa przydzielona jest do danego użytkownika
-każdy użytkownik powinien wyświetlać ylko swoje listy zakupowe.
-za każdym razem trzeba sprawdzać token czy sa poprawne dane.
-ogólnie brzmi jak od chuja pracy.
-
-
-
-*/
