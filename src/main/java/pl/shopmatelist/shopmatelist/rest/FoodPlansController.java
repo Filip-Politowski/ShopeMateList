@@ -15,28 +15,31 @@ public class FoodPlansController {
     private final FoodPlansService foodPlansService;
 
     @GetMapping("/{id}")
-    public FoodPlansDTO FindFoodPlanById(@PathVariable Long id){
-        return foodPlansService.findById(id);
+    public FoodPlansDTO FindFoodPlanById(@PathVariable Long id, @RequestHeader("Authorization") String token){
+        return foodPlansService.findById(id, token);
     }
 
     @GetMapping()
-    public List<FoodPlansDTO> findAllFoodPlans(){
-        return foodPlansService.findAll();
+    public List<FoodPlansDTO> findAllFoodPlans(@RequestHeader("Authorization") String token){
+        return foodPlansService.findAll(token);
+
     }
 
     @PostMapping()
-    public FoodPlansDTO createFoodPlan(@RequestBody FoodPlansDTO foodPlansDTO){
-        return foodPlansService.save(foodPlansDTO);
+    public FoodPlansDTO createFoodPlan(@RequestBody FoodPlansDTO foodPlansDTO, @RequestHeader("Authorization") String token){
+        return foodPlansService.save(foodPlansDTO, token);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteFoodPlanById(@PathVariable Long id){
-        foodPlansService.delete(id);
+    public void deleteFoodPlanById(@PathVariable Long id, @RequestHeader("Authorization") String token){
+        foodPlansService.deleteById(id, token);
     }
 
+
+
     @PutMapping()
-    public FoodPlansDTO updateFoodPlan(FoodPlansDTO foodPlansDTO){
-        return foodPlansService.update(foodPlansDTO);
+    public FoodPlansDTO updateFoodPlan(FoodPlansDTO foodPlansDTO, @RequestHeader("Authorization") String token){
+        return foodPlansService.update(foodPlansDTO, token);
     }
 
 }

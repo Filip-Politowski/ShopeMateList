@@ -3,9 +3,12 @@ package pl.shopmatelist.shopmatelist.services;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.shopmatelist.shopmatelist.dto.RecipesDTO;
+import pl.shopmatelist.shopmatelist.entity.Ingredients;
+import pl.shopmatelist.shopmatelist.entity.ProductsOnList;
 import pl.shopmatelist.shopmatelist.entity.Recipes;
 import pl.shopmatelist.shopmatelist.entity.User;
 import pl.shopmatelist.shopmatelist.mapper.RecipesMapper;
+import pl.shopmatelist.shopmatelist.repository.IngredientsRepository;
 import pl.shopmatelist.shopmatelist.repository.RecipesRepository;
 
 import java.util.List;
@@ -19,6 +22,7 @@ public class RecipesService {
     private final RecipesRepository recipesRepository;
     private final RecipesMapper recipesMapper;
     private final UserService userService;
+    private final IngredientsRepository ingredientsRepository;
 
 
     public RecipesDTO findById(Long recipeId, String token) {
@@ -42,7 +46,7 @@ public class RecipesService {
         User user = userService.userFromToken(token);
 
         Optional<Recipes> userRecipe = recipesRepository.findByRecipeNameAndUser(recipesDTO.getRecipeName(), userService.userFromToken(token));
-        if(userRecipe.isPresent()) {
+        if (userRecipe.isPresent()) {
             throw new IllegalArgumentException("Taki przepis już istnieje!");
         }
 
@@ -54,12 +58,21 @@ public class RecipesService {
 
     public void deleteById(Long id, String token) {
         User user = userService.userFromToken(token);
-        Recipes recipe = recipesRepository.findByRecipeIdAndUser(id, user).orElseThrow(() -> new NoSuchElementException("Nie ma takiego przepisu!"));
-        recipesRepository.delete(recipe);
+        Optional<Recipes> optionalRecipe = recipesRepository.findByRecipeIdAndUser(id, user);
+        if (optionalRecipe.isPresent()) {
+            Recipes recipeToDelete = optionalRecipe.get();
+
+            List<Ingredients> ingredients = ingredientsRepository.findAllByRecipe(recipeToDelete);
+            ingredientsRepository.deleteAll(ingredients);
+
+            recipesRepository.deleteById(id);
+            return;
+        }
+       throw new NoSuchElementException("Nie ma takiego przepisu!");
     }
 
     public RecipesDTO update(RecipesDTO recipesDTO, String token) {
-        if(recipesDTO.getRecipeId() == null) {
+        if (recipesDTO.getRecipeId() == null) {
             throw new NoSuchElementException("Nie ma takiego przepisu!");
         }
         User user = userService.userFromToken(token);

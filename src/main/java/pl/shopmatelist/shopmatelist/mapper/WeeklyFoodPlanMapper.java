@@ -27,7 +27,7 @@ public class WeeklyFoodPlanMapper {
         dto.setRecipeId(weeklyFoodPlan.getRecipes().getRecipeId());
         dto.setRecipeName(weeklyFoodPlan.getRecipes().getRecipeName());
         dto.setFoodPlanId(weeklyFoodPlan.getFoodPlan().getFoodPlanId());
-        dto.setFoodPlanName(weeklyFoodPlan.getFoodPlan().getDescription());
+        dto.setFoodPlanName(weeklyFoodPlan.getFoodPlan().getFoodPlanName());
         return dto;
     }
 

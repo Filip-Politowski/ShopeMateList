@@ -13,4 +13,5 @@ public interface WeeklyFoodPlanRepository extends JpaRepository<WeeklyFoodPlan, 
     @Query("SELECT i FROM WeeklyFoodPlan i WHERE i.foodPlan.foodPlanId = :foodPlanId")
     List<WeeklyFoodPlan> findAllByFoodPlanId(Long foodPlanId);
 
+    List<WeeklyFoodPlan> findAllByFoodPlan(FoodPlans foundFoodPlan);
 }

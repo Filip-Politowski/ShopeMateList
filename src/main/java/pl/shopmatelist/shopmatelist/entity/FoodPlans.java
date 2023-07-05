@@ -16,8 +16,9 @@ public class FoodPlans {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "food_plan_id")
     private Long foodPlanId;
-    @Column(name = "description")
-    private String description;
+
+    @Column(name = "name")
+    private String foodPlanName;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
