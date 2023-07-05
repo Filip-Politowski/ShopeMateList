@@ -1,7 +1,6 @@
 package pl.shopmatelist.shopmatelist.services;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.shopmatelist.shopmatelist.dto.RecipesDTO;
 import pl.shopmatelist.shopmatelist.entity.Recipes;
@@ -41,6 +40,12 @@ public class RecipesService {
 
     public RecipesDTO save(RecipesDTO recipesDTO, String token) {
         User user = userService.userFromToken(token);
+
+        Optional<Recipes> userRecipe = recipesRepository.findByRecipeNameAndUser(recipesDTO.getRecipeName(), userService.userFromToken(token));
+        if(userRecipe.isPresent()) {
+            throw new IllegalArgumentException("Taki przepis już istnieje!");
+        }
+
         Recipes recipes = recipesMapper.toEntity(recipesDTO);
         recipes.setUser(user);
         Recipes savedRecipes = recipesRepository.save(recipes);
