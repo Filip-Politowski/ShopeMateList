@@ -10,9 +10,9 @@ import java.util.List;
 
 public interface IngredientsRepository extends JpaRepository<Ingredients, Long> {
 
-    @Query("SELECT i.product FROM Ingredients i WHERE i.recipe.recipeId = :recipeId")
-    List<Products> findProductsByRecipeId(@Param("recipeId") Long recipeId);
 
-    @Query("SELECT i FROM Ingredients  i WHERE i.recipe.recipeId = :recipeId")
-    List<Ingredients> findIngredientsByRecipeId(@Param("recipeId")long recipeId);
+
+
+
+    List<Ingredients> findAllByRecipe_RecipeId(Long recipeId);
 }

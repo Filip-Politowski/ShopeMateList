@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
 
+import pl.shopmatelist.shopmatelist.dto.IngredientsDTO;
 import pl.shopmatelist.shopmatelist.dto.ProductsOnListDTO;
 import pl.shopmatelist.shopmatelist.dto.ShoppingListDTO;
 import pl.shopmatelist.shopmatelist.dto.WeeklyFoodPlanDTO;
 import pl.shopmatelist.shopmatelist.entity.*;
+import pl.shopmatelist.shopmatelist.mapper.IngredientsMapper;
 import pl.shopmatelist.shopmatelist.mapper.ProductsOnListMapper;
 import pl.shopmatelist.shopmatelist.mapper.ShoppingListMapper;
 import pl.shopmatelist.shopmatelist.mapper.WeeklyFoodPlanMapper;
@@ -28,6 +30,7 @@ public class ProductsOnListService {
     private final ProductsOnListRepository productsOnListRepository;
     private final ProductsOnListMapper productsOnListMapper;
     private final IngredientsService ingredientsService;
+    private final IngredientsMapper ingredientsMapper;
     private final ShoppingListService shoppingListService;
     private final ShoppingListMapper shoppingListMapper;
     private final WeeklyFoodPlanService weeklyFoodPlanService;
@@ -151,7 +154,11 @@ public class ProductsOnListService {
 
     public List<ProductsOnListDTO> addingAllProductsFromRecipe(Long recipeId, Long shoppingListId, String token) {
 
-        List<Ingredients> ingredients = ingredientsService.getIngredientsByRecipeId(recipeId);
+        List<IngredientsDTO> ingredientsDTO = ingredientsService.findAllByRecipeId(recipeId,token);
+
+
+        List<Ingredients> ingredients = ingredientsDTO.stream()
+                .map(ingredientsMapper::toEntity).toList();
         ShoppingListDTO shoppingListDto = shoppingListService.findById(shoppingListId, token);
         ShoppingList shoppingList = shoppingListMapper.toEntity(shoppingListDto);
 

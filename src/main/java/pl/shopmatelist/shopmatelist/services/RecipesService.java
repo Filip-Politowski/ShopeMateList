@@ -22,36 +22,46 @@ public class RecipesService {
     private final UserService userService;
 
 
-    public RecipesDTO findById(Long recipeId, String token){
+    public RecipesDTO findById(Long recipeId, String token) {
         User user = userService.userFromToken(token);
         Optional<Recipes> optionalRecipe = recipesRepository.findByRecipeIdAndUser(recipeId, user);
-        if(optionalRecipe.isPresent()){
+        if (optionalRecipe.isPresent()) {
             Recipes recipe = optionalRecipe.get();
-            return  recipesMapper.toDTO(recipe);
+            return recipesMapper.toDTO(recipe);
         }
         throw new NoSuchElementException("Nie ma takiego przepisu!");
 
     }
-    public List<RecipesDTO> findAll(String token){
+
+    public List<RecipesDTO> findAll(String token) {
         User user = userService.userFromToken(token);
         List<Recipes> recipes = recipesRepository.findAllByUser(user);
         return recipesMapper.toDtoList(recipes);
     }
 
-    public RecipesDTO createRecipes(RecipesDTO recipesDTO) {
+    public RecipesDTO save(RecipesDTO recipesDTO, String token) {
+        User user = userService.userFromToken(token);
         Recipes recipes = recipesMapper.toEntity(recipesDTO);
+        recipes.setUser(user);
         Recipes savedRecipes = recipesRepository.save(recipes);
         return recipesMapper.toDTO(savedRecipes);
     }
 
-    public void deleteById(Long id){
-        recipesRepository.deleteById(id);
+    public void deleteById(Long id, String token) {
+        User user = userService.userFromToken(token);
+        Recipes recipe = recipesRepository.findByRecipeIdAndUser(id, user).orElseThrow(() -> new NoSuchElementException("Nie ma takiego przepisu!"));
+        recipesRepository.delete(recipe);
     }
 
-    public RecipesDTO update(RecipesDTO recipesDTO){
-        Recipes recipe = recipesMapper.toEntity(recipesDTO);
-        Recipes updatedRecipe = recipesRepository.save(recipe);
-        return recipesMapper.toDTO(updatedRecipe);
+    public RecipesDTO update(RecipesDTO recipesDTO, String token) {
+        if(recipesDTO.getRecipeId() == null) {
+            throw new NoSuchElementException("Nie ma takiego przepisu!");
+        }
+        User user = userService.userFromToken(token);
+        Recipes recipes = recipesMapper.toEntity(recipesDTO);
+        recipes.setUser(user);
+        Recipes savedRecipes = recipesRepository.save(recipes);
+        return recipesMapper.toDTO(savedRecipes);
     }
 
 }
