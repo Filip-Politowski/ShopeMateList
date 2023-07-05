@@ -19,13 +19,13 @@ public class RecipesController {
     }
 
     @GetMapping("/{id}")
-    public RecipesDTO findRecipeById(@PathVariable Long id){
-        return recipesService.findById(id);
+    public RecipesDTO findRecipeById(@PathVariable Long id, @RequestHeader("Authorization") String token){
+        return recipesService.findById(id, token);
     }
 
     @GetMapping()
-    public List<RecipesDTO> findAllRecipes(){
-        return recipesService.findAll();
+    public List<RecipesDTO> findAllRecipes( @RequestHeader("Authorization") String token){
+        return recipesService.findAll(token);
     }
 
     @PostMapping()

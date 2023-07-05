@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.shopmatelist.shopmatelist.dto.RecipesDTO;
 import pl.shopmatelist.shopmatelist.entity.Recipes;
+import pl.shopmatelist.shopmatelist.entity.User;
 import pl.shopmatelist.shopmatelist.mapper.RecipesMapper;
 import pl.shopmatelist.shopmatelist.repository.RecipesRepository;
 
@@ -18,19 +19,22 @@ public class RecipesService {
 
     private final RecipesRepository recipesRepository;
     private final RecipesMapper recipesMapper;
+    private final UserService userService;
 
 
-    public RecipesDTO findById(Long id){
-        Optional<Recipes> optionalRecipe = recipesRepository.findById(id);
+    public RecipesDTO findById(Long recipeId, String token){
+        User user = userService.userFromToken(token);
+        Optional<Recipes> optionalRecipe = recipesRepository.findByRecipeIdAndUser(recipeId, user);
         if(optionalRecipe.isPresent()){
             Recipes recipe = optionalRecipe.get();
             return  recipesMapper.toDTO(recipe);
         }
-        throw new NoSuchElementException();
+        throw new NoSuchElementException("Nie ma takiego przepisu!");
 
     }
-    public List<RecipesDTO> findAll(){
-        List<Recipes> recipes = recipesRepository.findAll();
+    public List<RecipesDTO> findAll(String token){
+        User user = userService.userFromToken(token);
+        List<Recipes> recipes = recipesRepository.findAllByUser(user);
         return recipesMapper.toDtoList(recipes);
     }
 
