@@ -11,6 +11,7 @@ public class WeeklyFoodPlanDTO {
 
     private Long weeklyFoodPlanId;
     private Long foodPlanId;
+    private String foodPlanName;
     private String mealType;
     private Long recipeId;
     private String recipeName;

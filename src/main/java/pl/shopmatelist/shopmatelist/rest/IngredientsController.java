@@ -8,7 +8,7 @@ import pl.shopmatelist.shopmatelist.services.IngredientsService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/ingredients")
 public class IngredientsController {
 
     private final IngredientsService ingredientsService;
@@ -18,29 +18,29 @@ public class IngredientsController {
         this.ingredientsService = ingredientsService;
     }
 
-    @GetMapping("/ingredients/{id}")
-    public IngredientsDTO findIngredientById(@PathVariable Long id){
-        return ingredientsService.findById(id);
+    @GetMapping("/{id}")
+    public IngredientsDTO findIngredientById(@PathVariable Long id, @RequestHeader(value = "Authorization") String token){
+        return ingredientsService.findById(id, token);
     }
 
-    @GetMapping("/ingredients")
-    public List<IngredientsDTO>findAllIngredients(){
-        return ingredientsService.findAll();
+    @GetMapping("/recipe/{id}")
+    public List<IngredientsDTO>findAllIngredients(@PathVariable Long id, @RequestHeader(value = "Authorization") String token){
+        return ingredientsService.findAllByRecipeId(id, token);
     }
 
-    @PostMapping("/ingredients")
-    public IngredientsDTO createIngredient(@RequestBody IngredientsDTO ingredientsDTO) {
-        return  ingredientsService.save(ingredientsDTO);
+    @PostMapping()
+    public IngredientsDTO createIngredient(@RequestBody IngredientsDTO ingredientsDTO, @RequestHeader(value = "Authorization") String token) {
+        return  ingredientsService.save(ingredientsDTO, token);
     }
 
-    @DeleteMapping("/ingredients/{id}")
-    public void deleteIngredientById(@PathVariable Long id){
-        ingredientsService.deleteById(id);
+    @DeleteMapping("/{id}")
+    public void deleteIngredientById(@PathVariable Long id,  @RequestHeader(value = "Authorization") String token){
+        ingredientsService.deleteById(id, token);
     }
 
-    @PutMapping("/ingredients")
-    public IngredientsDTO updateIngredient(@RequestBody IngredientsDTO ingredientsDTO){
-        return ingredientsService.update(ingredientsDTO);
+    @PutMapping()
+    public IngredientsDTO updateIngredient(@RequestBody IngredientsDTO ingredientsDTO,  @RequestHeader(value = "Authorization") String token){
+        return ingredientsService.update(ingredientsDTO, token);
     }
 
 

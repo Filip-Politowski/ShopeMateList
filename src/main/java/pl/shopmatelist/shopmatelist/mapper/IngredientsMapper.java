@@ -29,6 +29,8 @@ public class IngredientsMapper {
         dto.setRecipeId(ingredients.getRecipe().getRecipeId());
         dto.setProductId(ingredients.getProduct().getProductId());
         dto.setQuantity(ingredients.getQuantity());
+        dto.setRecipeName(ingredients.getRecipe().getRecipeName());
+        dto.setProductName(ingredients.getProduct().getProductName());
         return dto;
     }
 

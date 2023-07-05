@@ -22,7 +22,7 @@ import java.util.List;
 
 @Data
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/products")
 public class ProductsController {
 
     private final ProductsService productsService;
@@ -30,17 +30,17 @@ public class ProductsController {
 
 
 
-    @GetMapping("/products/{id}")
+    @GetMapping("/{id}")
     public ProductsDTO findProductById(@PathVariable Long id) {
         return productsService.findById(id);
     }
 
-    @GetMapping("/products")
+    @GetMapping()
     List<ProductsDTO> findAllProducts(){
         return productsService.findAll();
     }
 
-    @PostMapping("/products")
+    @PostMapping()
 
     public ProductsDTO createProduct(@RequestBody ProductsDTO productsDTO, @RequestHeader("Authorization")String authorizationHeader) {
 
@@ -49,12 +49,12 @@ public class ProductsController {
         return productsService.createProducts(productsDTO);
     }
 
-    @DeleteMapping("/products/{id}")
+    @DeleteMapping("/{id}")
     public void deleteProductById(@PathVariable Long id){
         productsService.deleteById(id);
     }
 
-    @PutMapping("/products")
+    @PutMapping()
     public ProductsDTO updateProduct(ProductsDTO productsDTO){
         return productsService.update(productsDTO);
     }

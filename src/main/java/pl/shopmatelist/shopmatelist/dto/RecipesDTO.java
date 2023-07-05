@@ -11,4 +11,5 @@ public class RecipesDTO {
     private Long recipeId;
     private String recipeName;
     private String recipeDescription;
+    private Long UserId;
 }
