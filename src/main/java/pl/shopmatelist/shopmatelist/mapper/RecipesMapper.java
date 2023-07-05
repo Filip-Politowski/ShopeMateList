@@ -15,6 +15,7 @@ public class RecipesMapper {
         dto.setRecipeId(recipes.getRecipeId());
         dto.setRecipeName(recipes.getRecipeName());
         dto.setRecipeDescription(recipes.getRecipeDescription());
+        dto.setUserId(recipes.getUser().getId());
         return dto;
     }
 

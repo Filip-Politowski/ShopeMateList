@@ -19,6 +19,7 @@ public class FoodPlansMapper {
         FoodPlansDTO dto = new FoodPlansDTO();
         dto.setFoodPlanId(foodPlans.getFoodPlanId());
         dto.setDescription(foodPlans.getDescription());
+        dto.setUserId(foodPlans.getUser().getId());
         return dto;
     }
 

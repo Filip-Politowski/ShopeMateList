@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 public class FoodPlansDTO {
     private Long foodPlanId;
     private String description;
+    private Long UserId;
 
 }
