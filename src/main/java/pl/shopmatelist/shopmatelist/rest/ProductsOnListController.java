@@ -20,7 +20,7 @@ public class ProductsOnListController {
         return productsOnListService.findById(id, token);
     }
 
-    @GetMapping("/all/shopping-list/{id}")
+    @GetMapping("/shopping-list/{id}")
     public List<ProductsOnListDTO> findAllProductsOnListByShoppingListId(@PathVariable Long id, @RequestHeader("Authorization")String token){
         return productsOnListService.findAllByShoppingListId(id, token);
     }
