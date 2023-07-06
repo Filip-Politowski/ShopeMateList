@@ -34,6 +34,7 @@ public class WeeklyFoodPlanMapper {
     public WeeklyFoodPlan toEntity(WeeklyFoodPlanDTO weeklyFoodPlanDTO){
         WeeklyFoodPlan weeklyFoodPlan = new WeeklyFoodPlan();
         weeklyFoodPlan.setMealType(weeklyFoodPlanDTO.getMealType());
+        weeklyFoodPlan.setWeeklyFoodPlanId(weeklyFoodPlanDTO.getWeeklyFoodPlanId());
 
         Recipes recipes = recipesRepository.findById(weeklyFoodPlanDTO.getRecipeId()).orElseThrow(() -> new NoSuchElementException("Nie ma takiego przepisu"));
         weeklyFoodPlan.setRecipes(recipes);

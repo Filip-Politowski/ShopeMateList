@@ -193,7 +193,7 @@ public class ProductsOnListService {
     }
 
     public List<List<ProductsOnListDTO>> addingProductsFromWeeklyPlan(Long foodPlanId, Long shoppingListId, String token) {
-        List<WeeklyFoodPlanDTO> weeklyFoodPlansDTO = weeklyFoodPlanService.findAllByFoodPlanId(foodPlanId);
+        List<WeeklyFoodPlanDTO> weeklyFoodPlansDTO = weeklyFoodPlanService.findAllByFoodPlanId(foodPlanId, token);
         List<WeeklyFoodPlan> weeklyFoodPlans = weeklyFoodPlansDTO.stream()
                 .map(weeklyFoodPlanMapper::toEntity).toList();
 
