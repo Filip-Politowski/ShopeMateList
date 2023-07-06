@@ -7,6 +7,7 @@ import pl.shopmatelist.shopmatelist.entity.ProductsOnList;
 import pl.shopmatelist.shopmatelist.entity.Recipes;
 import pl.shopmatelist.shopmatelist.entity.ShoppingList;
 import pl.shopmatelist.shopmatelist.entity.User;
+import pl.shopmatelist.shopmatelist.exceptions.ShoppingListNotFoundException;
 import pl.shopmatelist.shopmatelist.mapper.ShoppingListMapper;
 import pl.shopmatelist.shopmatelist.repository.ProductsOnListRepository;
 import pl.shopmatelist.shopmatelist.repository.ShoppingListRepository;
@@ -34,7 +35,7 @@ public class ShoppingListService {
             ShoppingList foundShoppingList = shoppingList.get();
             return shoppingListMapper.toDTO(foundShoppingList);
         }
-        throw new NoSuchElementException("Nie ma takiej listy zakupowej");
+        throw new ShoppingListNotFoundException("Nie ma listy zakupowej o id: " + id + " w bazie!");
     }
 
 
@@ -75,7 +76,7 @@ public class ShoppingListService {
 
     public ShoppingListDTO update(ShoppingListDTO shoppingListDTO, String token) {
 
-        if (shoppingListDTO.getShoppingListId() == null){
+        if (shoppingListDTO.getShoppingListId() == null) {
             throw new IllegalArgumentException("Nie ma takiej listy zakupowej");
         }
 

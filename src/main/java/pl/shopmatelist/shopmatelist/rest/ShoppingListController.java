@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import pl.shopmatelist.shopmatelist.dto.ProductsOnListDTO;
 import pl.shopmatelist.shopmatelist.dto.ShoppingListDTO;
+import pl.shopmatelist.shopmatelist.exceptions.ShoppingListNotFoundException;
 import pl.shopmatelist.shopmatelist.services.ShoppingListService;
 
 import java.util.List;
@@ -17,7 +18,11 @@ public class ShoppingListController {
 
     @GetMapping("/{id}")
     public ShoppingListDTO findShoppingListById(@PathVariable Long id, @RequestHeader("Authorization") String token) {
-        return shoppingListService.findById(id, token);
+        try {
+            return shoppingListService.findById(id, token);
+        } catch (ShoppingListNotFoundException exc) {
+           throw new ShoppingListNotFoundException(exc.getMessage());
+        }
     }
 
     @GetMapping()
