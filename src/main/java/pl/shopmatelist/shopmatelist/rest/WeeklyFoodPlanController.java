@@ -15,32 +15,27 @@ public class WeeklyFoodPlanController {
     private final WeeklyFoodPlanService weeklyFoodPlanService;
 
     @GetMapping("/{id}")
-    public WeeklyFoodPlanDTO findWeeklyFoodPlanById(@PathVariable Long id){
-        return weeklyFoodPlanService.findById(id);
+    public WeeklyFoodPlanDTO findWeeklyFoodPlanById(@PathVariable Long id, @RequestHeader("Authorization") String token){
+        return weeklyFoodPlanService.findById(id, token);
     }
-    @GetMapping()
-    public List<WeeklyFoodPlanDTO> findAllWeeklyFoodPlans(){
-        return weeklyFoodPlanService.findAll();
-    }
-
-    @GetMapping("/all/{id}")
-    public List<WeeklyFoodPlanDTO> findAllWeeklyFoodPlansById(@PathVariable Long id){
-        return weeklyFoodPlanService.findAllByFoodPlanId(id);
+    @GetMapping("/food-plan/{id}")
+    public List<WeeklyFoodPlanDTO> findAllWeeklyFoodPlansByFoodPlanId(@PathVariable Long id, @RequestHeader("Authorization") String token){
+        return weeklyFoodPlanService.findAllByFoodPlanId(id,token);
     }
 
     @PostMapping()
-    public WeeklyFoodPlanDTO createWeeklyFoodPlan(@RequestBody WeeklyFoodPlanDTO weeklyFoodPlanDTO){
-        return weeklyFoodPlanService.save(weeklyFoodPlanDTO);
+    public WeeklyFoodPlanDTO createWeeklyFoodPlan(@RequestBody WeeklyFoodPlanDTO weeklyFoodPlanDTO, @RequestHeader("Authorization") String token){
+        return weeklyFoodPlanService.save(weeklyFoodPlanDTO, token);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteWeeklyFoodPlan(@PathVariable Long id){
-        weeklyFoodPlanService.deleteById(id);
+    public void deleteWeeklyFoodPlan(@PathVariable Long id, @RequestHeader("Authorization") String token){
+        weeklyFoodPlanService.deleteById(id, token);
     }
 
     @PutMapping()
-    public WeeklyFoodPlanDTO updateWeeklyFoodPlan(@RequestBody WeeklyFoodPlanDTO weeklyFoodPlanDTO){
-        return weeklyFoodPlanService.update(weeklyFoodPlanDTO);
+    public WeeklyFoodPlanDTO updateWeeklyFoodPlan(@RequestBody WeeklyFoodPlanDTO weeklyFoodPlanDTO, @RequestHeader("Authorization") String token){
+        return weeklyFoodPlanService.update(weeklyFoodPlanDTO, token );
     }
 
 

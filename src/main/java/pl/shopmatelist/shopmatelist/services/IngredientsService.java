@@ -86,6 +86,7 @@ public class IngredientsService {
             }
             throw new AuthorizationServiceException("Nie masz dostępu do tego produktu");
         }
+        throw new NoSuchElementException("Nie ma takiego składnika");
     }
 
     public IngredientsDTO update(IngredientsDTO ingredientsDTO, String token) {
@@ -97,8 +98,14 @@ public class IngredientsService {
         Ingredients ingredients = ingredientsMapper.toEntity(ingredientsDTO);
 
         if(userAuthorization(ingredients, token)) {
-            Ingredients savedIngredients = ingredientsRepository.save(ingredients);
-            return ingredientsMapper.toDTO(savedIngredients);
+            Optional<Ingredients> foundIngredient = ingredientsRepository.findById(ingredients.getIngredientId());
+            if(foundIngredient.isPresent()) {
+                Ingredients ingredientToSet = foundIngredient.get();
+                ingredientToSet.setQuantity(ingredientsDTO.getQuantity());
+                Ingredients savedIngredients = ingredientsRepository.save(ingredientToSet);
+                return ingredientsMapper.toDTO(savedIngredients);
+            }
+
         }
         throw new AuthorizationServiceException("Nie masz dostępu do tego produktu");
 
