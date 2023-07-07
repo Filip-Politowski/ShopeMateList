@@ -42,7 +42,7 @@ public class ProductsService {
     public ProductsDTO createProducts(ProductsDTO productsDTO) {
         List<Products> products = productsRepository.findAll();
         Products product = productsMapper.toEntity(productsDTO);
-        boolean exist = products.stream().anyMatch(productInDB -> productInDB.getProductName().equals(product.getProductName().toLowerCase()));
+        boolean exist = products.stream().anyMatch(productInDB -> productInDB.getProductName().equals(product.getProductName().toLowerCase()) || productInDB.getProductId().equals(product.getProductId()));
         if (exist) {
             throw new IllegalArgumentException("Produkt o nazwie: " + product.getProductName() + " już istnieje");
         } else {

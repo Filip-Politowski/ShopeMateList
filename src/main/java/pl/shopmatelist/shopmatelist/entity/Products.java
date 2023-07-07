@@ -17,6 +17,6 @@ public class Products {
     private Long productId;
     @Column(name = "product_name")
     private String productName;
-    @Column(name = "category")
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private FoodCategory foodCategory;
 }

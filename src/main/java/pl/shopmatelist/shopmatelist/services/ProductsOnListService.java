@@ -9,6 +9,9 @@ import pl.shopmatelist.shopmatelist.dto.ProductsOnListDTO;
 import pl.shopmatelist.shopmatelist.dto.ShoppingListDTO;
 import pl.shopmatelist.shopmatelist.dto.WeeklyFoodPlanDTO;
 import pl.shopmatelist.shopmatelist.entity.*;
+import pl.shopmatelist.shopmatelist.exceptions.AuthorizationException;
+import pl.shopmatelist.shopmatelist.exceptions.IllegalArgumentException;
+import pl.shopmatelist.shopmatelist.exceptions.ProductOnListNotFoundException;
 import pl.shopmatelist.shopmatelist.mapper.IngredientsMapper;
 import pl.shopmatelist.shopmatelist.mapper.ProductsOnListMapper;
 import pl.shopmatelist.shopmatelist.mapper.ShoppingListMapper;
@@ -49,22 +52,24 @@ public class ProductsOnListService {
 
                 return productsOnListMapper.toDto(foundProductOnList);
             } else {
-                throw new AuthorizationServiceException("Brak uprawnień do zobaczenia tego produktu");
+                throw new AuthorizationException("Brak uprawnień do odczytania tego produktu");
             }
         }
-        throw new NoSuchElementException("Nie ma takiego elementu na liście");
+        throw new ProductOnListNotFoundException("Nie ma takiego produktu na liście zakupowej");
     }
 
     public List<ProductsOnListDTO> findAllByShoppingListId(Long shoppingListId, String token) {
         User user = userService.userFromToken(token);
         List<ShoppingList> userShoppingLists = shoppingListRepository.findAllByUser(user);
+
         boolean hasMatchingShoppingList = userShoppingLists.stream()
                 .anyMatch(shoppingList -> shoppingList.getShoppingListId().equals(shoppingListId));
+
         if (hasMatchingShoppingList) {
             List<ProductsOnList> allFoundProductsOnList = productsOnListRepository.findAllByShoppingListId(shoppingListId);
             return productsOnListMapper.toDtoList(allFoundProductsOnList);
         }
-        throw new AuthorizationServiceException("Brak uprawnień do zobaczenia tych produktów");
+        throw new AuthorizationException("Brak uprawnień do odczytania tych produktów");
 
     }
 
@@ -94,7 +99,7 @@ public class ProductsOnListService {
 
             }
         } else {
-            throw new AuthorizationServiceException("Brak uprawnień do zapisania tego produktu");
+            throw new AuthorizationException("Brak uprawnień do zapisania tego produktu");
         }
 
 
@@ -109,10 +114,10 @@ public class ProductsOnListService {
             if (userAuthorization(token, productToDelete)) {
                 productsOnListRepository.delete(productToDelete);
             } else {
-                throw new AuthorizationServiceException("Brak uprawnień do usunięcia tego produktu");
+                throw new AuthorizationException("Brak uprawnień do usunięcia tego produktu");
             }
         } else {
-            throw new NoSuchElementException("Nie ma takiego produktu na liście");
+            throw new ProductOnListNotFoundException("Nie ma produktu o id: " + id + " na liście zakupowej");
         }
     }
 
@@ -120,7 +125,7 @@ public class ProductsOnListService {
     public ProductsOnListDTO update(ProductsOnListDTO productsOnListDTO, String token) {
 
         if (productsOnListDTO.getListItemId() == null) {
-            throw new IllegalArgumentException("Nie ma takiego produktu na liście");
+            throw new IllegalArgumentException("Należy podać id produktu na liście");
         }
 
         ProductsOnList product = productsOnListMapper.toEntity(productsOnListDTO);
@@ -136,7 +141,7 @@ public class ProductsOnListService {
 
             }
         }
-        throw new NoSuchElementException("Nie masz dostępu do tego produktu");
+        throw new AuthorizationException("Nie masz dostępu do tego produktu na liście");
     }
 
 

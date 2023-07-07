@@ -21,8 +21,8 @@ public class WeeklyFoodPlan {
     @JoinColumn(name = "recipe_id")
     private Recipes recipes;
 
-    @Column(name = "meal_type")
-    private String mealType;
+    @Enumerated(EnumType.STRING)
+    private MealType mealType;
 
     @ManyToOne
     @JoinColumn(name = "food_plan_id")

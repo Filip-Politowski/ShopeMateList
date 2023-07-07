@@ -7,6 +7,8 @@ import pl.shopmatelist.shopmatelist.entity.FoodPlans;
 import pl.shopmatelist.shopmatelist.entity.Recipes;
 import pl.shopmatelist.shopmatelist.entity.User;
 import pl.shopmatelist.shopmatelist.entity.WeeklyFoodPlan;
+import pl.shopmatelist.shopmatelist.exceptions.FoodPlanNotFoundException;
+import pl.shopmatelist.shopmatelist.exceptions.IllegalArgumentException;
 import pl.shopmatelist.shopmatelist.mapper.FoodPlansMapper;
 import pl.shopmatelist.shopmatelist.repository.FoodPlansRepository;
 import pl.shopmatelist.shopmatelist.repository.WeeklyFoodPlanRepository;
@@ -33,12 +35,15 @@ public class FoodPlansService {
             FoodPlans foundFoodPlan = foodPlan.get();
             return foodPlansMapper.toDto(foundFoodPlan);
         }
-        throw new NoSuchElementException("Nie ma takiego planu");
+        throw new FoodPlanNotFoundException("Nie ma planu o id: " + foodPlanId);
     }
 
     public List<FoodPlansDTO> findAll(String token) {
         User user = userService.userFromToken(token);
         List<FoodPlans> foodPlans = foodPlansRepository.findAllByUser(user);
+        if (foodPlans.isEmpty()) {
+            throw new FoodPlanNotFoundException("Brak planów posiłków");
+        }
         return foodPlansMapper.toDtoList(foodPlans);
     }
 
@@ -68,14 +73,13 @@ public class FoodPlansService {
             foodPlansRepository.deleteById(id);
             return;
         }
-        throw new NoSuchElementException("Nie ma takiego planu");
-
+        throw new FoodPlanNotFoundException("Nie ma planu o id: " + id);
     }
 
     public FoodPlansDTO update(FoodPlansDTO foodPlansDTO, String token) {
 
         if(foodPlansDTO.getFoodPlanId() == null) {
-            throw new NoSuchElementException("Nie ma takiego przepisu!");
+            throw new java.lang.IllegalArgumentException("Należy podać ID planu");
         }
         User user = userService.userFromToken(token);
         FoodPlans foodPlan = foodPlansMapper.toEntity(foodPlansDTO);

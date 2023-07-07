@@ -7,6 +7,9 @@ import pl.shopmatelist.shopmatelist.dto.IngredientsDTO;
 import pl.shopmatelist.shopmatelist.entity.Ingredients;
 import pl.shopmatelist.shopmatelist.entity.Recipes;
 import pl.shopmatelist.shopmatelist.entity.User;
+import pl.shopmatelist.shopmatelist.exceptions.AuthorizationException;
+import pl.shopmatelist.shopmatelist.exceptions.IllegalArgumentException;
+import pl.shopmatelist.shopmatelist.exceptions.IngredientNofFoundException;
 import pl.shopmatelist.shopmatelist.mapper.IngredientsMapper;
 import pl.shopmatelist.shopmatelist.repository.IngredientsRepository;
 import pl.shopmatelist.shopmatelist.repository.RecipesRepository;
@@ -36,10 +39,10 @@ public class IngredientsService {
             if (userAuthorization(ingredient, token)) {
                 return ingredientsMapper.toDTO(ingredient);
             } else {
-                throw new AuthorizationServiceException("Nie masz dostępu do tego produktu");
+                throw new AuthorizationException("Nie masz dostępu do tego składnika");
             }
         }
-        throw new NoSuchElementException();
+        throw new IngredientNofFoundException("Nie ma takiego składnika");
 
     }
 
@@ -49,18 +52,20 @@ public class IngredientsService {
         boolean  hasMatchingRecipe = userRecipes.stream()
                 .anyMatch(recipe -> recipe.getRecipeId().equals(recipeId));
         if (hasMatchingRecipe) {
-
             List<Ingredients> ingredients = ingredientsRepository.findAllByRecipe_RecipeId(recipeId);
+            if(ingredients.isEmpty()){
+                throw new IngredientNofFoundException("Nie ma żadnych składników");
+            }
             return ingredientsMapper.toDtoList(ingredients);
         }
-        throw new AuthorizationServiceException("Nie masz dostępu do tego produktu");
+        throw new AuthorizationException("Nie masz dostępu do tych składników");
     }
 
     public IngredientsDTO save(IngredientsDTO ingredientsDTO, String token) {
 
         List<Ingredients> ingredients = ingredientsRepository.findAllByRecipe_RecipeId(ingredientsDTO.getRecipeId());
         if(ingredients.stream().anyMatch(userIngredients -> userIngredients.getProduct().getProductId().equals(ingredientsDTO.getProductId()))){
-            throw new AuthorizationServiceException("Dany produkt znajduje się już na liście, nie możesz dodać go ponownie");
+            throw new IllegalArgumentException("Dany składnik znajduje się już na liście, nie możesz dodać go ponownie");
         }
 
         Ingredients ingredient = ingredientsMapper.toEntity(ingredientsDTO);
@@ -69,7 +74,7 @@ public class IngredientsService {
             Ingredients savedIngredients = ingredientsRepository.save(ingredient);
             return ingredientsMapper.toDTO(savedIngredients);
         }
-        throw new AuthorizationServiceException("Nie masz dostępu do tego produktu");
+        throw new AuthorizationException("Nie masz dostępu do tego składnika");
 
     }
 
@@ -84,15 +89,15 @@ public class IngredientsService {
                 ingredientsRepository.deleteById(id);
                 return;
             }
-            throw new AuthorizationServiceException("Nie masz dostępu do tego produktu");
+            throw new AuthorizationException("Nie masz dostępu do tego składnika");
         }
-        throw new NoSuchElementException("Nie ma takiego składnika");
+        throw new IngredientNofFoundException("Nie ma składnika o id: " + id);
     }
 
     public IngredientsDTO update(IngredientsDTO ingredientsDTO, String token) {
 
         if(ingredientsDTO.getIngredientId() == null) {
-            throw new NoSuchElementException("Nie ma takiego produktu!");
+            throw new java.lang.IllegalArgumentException("Należy podać id składnika");
         }
 
         Ingredients ingredients = ingredientsMapper.toEntity(ingredientsDTO);
@@ -107,7 +112,7 @@ public class IngredientsService {
             }
 
         }
-        throw new AuthorizationServiceException("Nie masz dostępu do tego produktu");
+        throw new AuthorizationException("Nie masz dostępu do tego składnika");
 
     }
 
