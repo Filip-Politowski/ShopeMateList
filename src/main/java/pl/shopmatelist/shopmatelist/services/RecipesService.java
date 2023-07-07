@@ -1,12 +1,16 @@
 package pl.shopmatelist.shopmatelist.services;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import pl.shopmatelist.shopmatelist.dto.RecipesDTO;
 import pl.shopmatelist.shopmatelist.entity.Ingredients;
 import pl.shopmatelist.shopmatelist.entity.ProductsOnList;
 import pl.shopmatelist.shopmatelist.entity.Recipes;
 import pl.shopmatelist.shopmatelist.entity.User;
+import pl.shopmatelist.shopmatelist.exceptions.IllegalArgumentException;
+import pl.shopmatelist.shopmatelist.exceptions.RecipeNotFoundException;
 import pl.shopmatelist.shopmatelist.mapper.RecipesMapper;
 import pl.shopmatelist.shopmatelist.repository.IngredientsRepository;
 import pl.shopmatelist.shopmatelist.repository.RecipesRepository;
@@ -28,11 +32,12 @@ public class RecipesService {
     public RecipesDTO findById(Long recipeId, String token) {
         User user = userService.userFromToken(token);
         Optional<Recipes> optionalRecipe = recipesRepository.findByRecipeIdAndUser(recipeId, user);
+
         if (optionalRecipe.isPresent()) {
             Recipes recipe = optionalRecipe.get();
             return recipesMapper.toDTO(recipe);
         }
-        throw new NoSuchElementException("Nie ma takiego przepisu!");
+        throw new RecipeNotFoundException("Nie ma przepisu o id: " + recipeId + " w bazie!");
 
     }
 
@@ -47,7 +52,7 @@ public class RecipesService {
 
         Optional<Recipes> userRecipe = recipesRepository.findByRecipeNameAndUser(recipesDTO.getRecipeName(), userService.userFromToken(token));
         if (userRecipe.isPresent()) {
-            throw new IllegalArgumentException("Taki przepis już istnieje!");
+            throw new IllegalArgumentException("Przepis o nazwie " + recipesDTO.getRecipeName() + " już istnieje w bazie!");
         }
 
         Recipes recipes = recipesMapper.toEntity(recipesDTO);
@@ -68,12 +73,12 @@ public class RecipesService {
             recipesRepository.deleteById(id);
             return;
         }
-       throw new NoSuchElementException("Nie ma takiego przepisu!");
+       throw new RecipeNotFoundException("Nie ma przepisu o id: " + id + " w bazie!");
     }
 
     public RecipesDTO update(RecipesDTO recipesDTO, String token) {
         if (recipesDTO.getRecipeId() == null) {
-            throw new NoSuchElementException("Nie ma takiego przepisu!");
+            throw new RecipeNotFoundException("Nie ma przepisu o id: " + recipesDTO.getRecipeId() + " w bazie!");
         }
         User user = userService.userFromToken(token);
         Recipes recipes = recipesMapper.toEntity(recipesDTO);

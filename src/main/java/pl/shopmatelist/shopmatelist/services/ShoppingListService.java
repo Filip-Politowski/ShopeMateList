@@ -7,9 +7,14 @@ import pl.shopmatelist.shopmatelist.entity.ProductsOnList;
 import pl.shopmatelist.shopmatelist.entity.Recipes;
 import pl.shopmatelist.shopmatelist.entity.ShoppingList;
 import pl.shopmatelist.shopmatelist.entity.User;
+import pl.shopmatelist.shopmatelist.exceptions.IllegalArgumentException;
+import pl.shopmatelist.shopmatelist.exceptions.RecipeNotFoundException;
+import pl.shopmatelist.shopmatelist.exceptions.ShoppingListNotFoundException;
+import pl.shopmatelist.shopmatelist.exceptions.UserNotFoundException;
 import pl.shopmatelist.shopmatelist.mapper.ShoppingListMapper;
 import pl.shopmatelist.shopmatelist.repository.ProductsOnListRepository;
 import pl.shopmatelist.shopmatelist.repository.ShoppingListRepository;
+import pl.shopmatelist.shopmatelist.repository.UserRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,7 +26,7 @@ public class ShoppingListService {
     private final ShoppingListRepository shoppingListRepository;
     private final ShoppingListMapper shoppingListMapper;
     private final UserService userService;
-
+    private final UserRepository userRepository;
 
     private final ProductsOnListRepository productsOnListRepository;
 
@@ -34,7 +39,7 @@ public class ShoppingListService {
             ShoppingList foundShoppingList = shoppingList.get();
             return shoppingListMapper.toDTO(foundShoppingList);
         }
-        throw new NoSuchElementException("Nie ma takiej listy zakupowej");
+        throw new ShoppingListNotFoundException("Nie ma listy zakupowej o id: " + id + " w bazie!");
     }
 
 
@@ -68,15 +73,15 @@ public class ShoppingListService {
             shoppingListRepository.delete(shoppingListToDelete);
             return;
         }
-        throw new NoSuchElementException("Nie ma takiej listy zakupowej");
+        throw new ShoppingListNotFoundException("Nie ma listy zakupowej o id: " + id + " w bazie");
 
     }
 
 
     public ShoppingListDTO update(ShoppingListDTO shoppingListDTO, String token) {
 
-        if (shoppingListDTO.getShoppingListId() == null){
-            throw new IllegalArgumentException("Nie ma takiej listy zakupowej");
+        if (shoppingListDTO.getShoppingListId() == null) {
+            throw new IllegalArgumentException("Musisz podać ID listy zakupowej");
         }
 
         User user = userService.userFromToken(token);
@@ -90,32 +95,37 @@ public class ShoppingListService {
 
     public ShoppingListDTO shareShoppingList(Long shoppingListId, String token, Long userId) {
         User user = userService.userFromToken(token);
-        User userToShare = userService.findByUserId(userId);
-        Optional<ShoppingList> shoppingList = shoppingListRepository.findByShoppingListIdAndUser(shoppingListId, user);
-        if (shoppingList.isPresent()) {
-            ShoppingList foundShoppingList = shoppingList.get();
-            ShoppingList sharedShoppingList = new ShoppingList();
-            sharedShoppingList.setOwner(false);
-            sharedShoppingList.setUser(userToShare);
-            sharedShoppingList.setShoppingDate(foundShoppingList.getShoppingDate());
-            sharedShoppingList.setMarket(foundShoppingList.getMarket());
-
-            ShoppingList savedShoppingList = shoppingListRepository.save(sharedShoppingList);
+        Optional<User> userToShare = Optional.ofNullable(userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Nie ma użytkownika o podanym ID")));
+      if(userToShare.isPresent()) {
+          User foundUser = userToShare.get();
 
 
-            List<ProductsOnList> productsOnList = productsOnListRepository.findAllByShoppingListId(shoppingListId);
-            productsOnList.forEach(productOnList -> {
-                ProductsOnList productsOnListToShare = new ProductsOnList();
-                productsOnListToShare.setShoppingList(savedShoppingList);
-                productsOnListToShare.setProduct(productOnList.getProduct());
-                productsOnListToShare.setQuantity(productOnList.getQuantity());
-                productsOnListRepository.save(productsOnListToShare);
+          Optional<ShoppingList> shoppingList = shoppingListRepository.findByShoppingListIdAndUser(shoppingListId, user);
+          if (shoppingList.isPresent()) {
+              ShoppingList foundShoppingList = shoppingList.get();
+              ShoppingList sharedShoppingList = new ShoppingList();
+              sharedShoppingList.setOwner(false);
+              sharedShoppingList.setUser(foundUser);
+              sharedShoppingList.setShoppingDate(foundShoppingList.getShoppingDate());
+              sharedShoppingList.setMarket(foundShoppingList.getMarket());
 
-            });
+              ShoppingList savedShoppingList = shoppingListRepository.save(sharedShoppingList);
 
 
-            return shoppingListMapper.toDTO(savedShoppingList);
-        }
-        throw new NoSuchElementException("Nie ma takiej listy zakupowej");
+              List<ProductsOnList> productsOnList = productsOnListRepository.findAllByShoppingListId(shoppingListId);
+              productsOnList.forEach(productOnList -> {
+                  ProductsOnList productsOnListToShare = new ProductsOnList();
+                  productsOnListToShare.setShoppingList(savedShoppingList);
+                  productsOnListToShare.setProduct(productOnList.getProduct());
+                  productsOnListToShare.setQuantity(productOnList.getQuantity());
+                  productsOnListRepository.save(productsOnListToShare);
+
+              });
+
+
+              return shoppingListMapper.toDTO(savedShoppingList);
+          }
+      }
+        throw new ShoppingListNotFoundException("Nie możesz udostępnić listy zakupowej która nie istnieje");
     }
 }

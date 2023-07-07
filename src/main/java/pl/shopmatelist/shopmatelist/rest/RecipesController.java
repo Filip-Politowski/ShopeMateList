@@ -4,8 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import pl.shopmatelist.shopmatelist.dto.RecipesDTO;
+import pl.shopmatelist.shopmatelist.exceptions.IllegalArgumentException;
+import pl.shopmatelist.shopmatelist.exceptions.RecipeNotFoundException;
 import pl.shopmatelist.shopmatelist.services.RecipesService;
 
 import java.util.List;
@@ -21,12 +25,12 @@ public class RecipesController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<RecipesDTO> findRecipeById(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+    public RecipesDTO findRecipeById(@PathVariable Long id, @RequestHeader("Authorization") String token) {
         try {
-            RecipesDTO recipe = recipesService.findById(id, token);
-            return ResponseEntity.ok(recipe);
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return  recipesService.findById(id, token);
+        }
+        catch (RecipeNotFoundException exc) {
+             throw new RecipeNotFoundException(exc.getMessage());
         }
     }
 
@@ -37,17 +41,33 @@ public class RecipesController {
 
     @PostMapping()
     public RecipesDTO createRecipes(@RequestBody RecipesDTO recipesDTO, @RequestHeader("Authorization") String token) {
-        return  recipesService.save(recipesDTO, token);
+       try {
+           return  recipesService.save(recipesDTO, token);
+       }catch (IllegalArgumentException exc) {
+           throw new IllegalArgumentException(exc.getMessage());
+       }
+
+
     }
 
     @DeleteMapping("/{id}")
     public void deleteRecipesById(@PathVariable Long id, @RequestHeader("Authorization") String token){
-        recipesService.deleteById(id, token);
+       try {
+           recipesService.deleteById(id, token);
+       }catch (RecipeNotFoundException exc) {
+           throw new RecipeNotFoundException(exc.getMessage());
+       }
+
     }
 
     @PutMapping()
     public RecipesDTO updateRecipes(@RequestBody RecipesDTO recipesDTO, @RequestHeader("Authorization") String token) {
-        return recipesService.update(recipesDTO, token);
+        try {
+            return recipesService.update(recipesDTO, token);
+        }catch (RecipeNotFoundException exc){
+            throw new RecipeNotFoundException(exc.getMessage());
+        }
+
     }
 
 
