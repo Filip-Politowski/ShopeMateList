@@ -1,4 +1,7 @@
 package pl.shopmatelist.shopmatelist.exceptions;
 
-public class ProductOnListNotFoundException {
+public class ProductOnListNotFoundException extends RecipeNotFoundException{
+    public ProductOnListNotFoundException(String message) {
+        super(message);
+    }
 }
