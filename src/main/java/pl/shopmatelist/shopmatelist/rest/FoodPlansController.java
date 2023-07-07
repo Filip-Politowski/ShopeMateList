@@ -58,11 +58,7 @@ public class FoodPlansController {
 
     @PutMapping()
     public FoodPlansDTO updateFoodPlan(FoodPlansDTO foodPlansDTO, @RequestHeader("Authorization") String token) {
-        try {
             return foodPlansService.update(foodPlansDTO, token);
-        }catch (IllegalArgumentException exc) {
-            throw new IllegalArgumentException(exc.getMessage());
-        }
 
     }
 

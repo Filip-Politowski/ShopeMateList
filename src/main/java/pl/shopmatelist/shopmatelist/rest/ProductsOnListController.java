@@ -52,8 +52,8 @@ public class ProductsOnListController {
         return productsOnListService.addingAllProductsFromRecipe(recipeId, shoppingListId, token);
     }
 
-    @PostMapping("/weekly-food-plan/{foodPlanId}/{shoppingListId}")
-    public List<List<ProductsOnListDTO>> addAllProductsFromWeeklyFoodPlan(@PathVariable Long foodPlanId, @PathVariable Long shoppingListId, @RequestHeader("Authorization") String token) {
+    @PostMapping("/food-plan/{foodPlanId}/{shoppingListId}")
+    public List<List<ProductsOnListDTO>> addAllProductsFromFoodPlan(@PathVariable Long foodPlanId, @PathVariable Long shoppingListId, @RequestHeader("Authorization") String token) {
         return productsOnListService.addingProductsFromWeeklyPlan(foodPlanId, shoppingListId, token);
     }
 
