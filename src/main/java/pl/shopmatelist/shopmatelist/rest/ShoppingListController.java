@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import pl.shopmatelist.shopmatelist.dto.ProductsOnListDTO;
 import pl.shopmatelist.shopmatelist.dto.ShoppingListDTO;
+import pl.shopmatelist.shopmatelist.exceptions.IllegalArgumentException;
 import pl.shopmatelist.shopmatelist.exceptions.ShoppingListNotFoundException;
+import pl.shopmatelist.shopmatelist.exceptions.UserNotFoundException;
 import pl.shopmatelist.shopmatelist.services.ShoppingListService;
 
 import java.util.List;
@@ -21,7 +23,7 @@ public class ShoppingListController {
         try {
             return shoppingListService.findById(id, token);
         } catch (ShoppingListNotFoundException exc) {
-           throw new ShoppingListNotFoundException(exc.getMessage());
+            throw new ShoppingListNotFoundException(exc.getMessage());
         }
     }
 
@@ -38,17 +40,33 @@ public class ShoppingListController {
 
     @PostMapping("/share/{shoppingListId}/{userId}")
     public ShoppingListDTO shareShoppingList(@PathVariable Long shoppingListId, @PathVariable Long userId, @RequestHeader("Authorization") String token) {
-        return shoppingListService.shareShoppingList(shoppingListId, token, userId);
+        try {
+            return shoppingListService.shareShoppingList(shoppingListId, token, userId);
+
+        } catch (UserNotFoundException exc) {
+            throw new UserNotFoundException(exc.getMessage());
+        } catch (ShoppingListNotFoundException exc) {
+            throw new ShoppingListNotFoundException(exc.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
     public void deleteShoppingList(@PathVariable Long id, @RequestHeader("Authorization") String token) {
-        shoppingListService.deleteById(id, token);
+        try {
+            shoppingListService.deleteById(id, token);
+        } catch (ShoppingListNotFoundException exc) {
+            throw new ShoppingListNotFoundException(exc.getMessage());
+        }
     }
 
     @PutMapping()
     public ShoppingListDTO updateShoppingList(@RequestBody ShoppingListDTO shoppingListDTO, @RequestHeader("Authorization") String token) {
-        return shoppingListService.update(shoppingListDTO, token);
+        try {
+            return shoppingListService.update(shoppingListDTO, token);
+        } catch (IllegalArgumentException exc) {
+            throw new IllegalArgumentException(exc.getMessage());
+        }
+
     }
 
 }
