@@ -4,13 +4,12 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import pl.shopmatelist.shopmatelist.exceptions.ProductNotFoundException;
 import pl.shopmatelist.shopmatelist.exceptions.ProductOnListNotFoundException;
-import pl.shopmatelist.shopmatelist.rest.errorResponse.ErrorResponse;
+import pl.shopmatelist.shopmatelist.dto.response.ErrorResponse;
 
 @ControllerAdvice
 public class ProductOnListExceptionHandler {
-    @ExceptionHandler(ProductNotFoundException.class)
+    @ExceptionHandler(ProductOnListNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleException(ProductOnListNotFoundException exc){
         ErrorResponse error = new ErrorResponse();
         error.setStatus(404);

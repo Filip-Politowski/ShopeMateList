@@ -1,7 +1,6 @@
 package pl.shopmatelist.shopmatelist.services;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import pl.shopmatelist.shopmatelist.dto.ProductsDTO;
@@ -10,10 +9,8 @@ import pl.shopmatelist.shopmatelist.exceptions.IllegalArgumentException;
 import pl.shopmatelist.shopmatelist.exceptions.ProductNotFoundException;
 import pl.shopmatelist.shopmatelist.mapper.ProductsMapper;
 import pl.shopmatelist.shopmatelist.repository.ProductsRepository;
-import pl.shopmatelist.shopmatelist.repository.UserRepository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -53,16 +50,20 @@ public class ProductsService {
     }
 
     public void deleteById(Long id) {
-        if (!productsRepository.existsById(id)) {
-            throw new ProductNotFoundException("Nie ma produktu o podanym id:  " + id);
+
+        Optional<Products> productToDelete = productsRepository.findById(id);
+        if (productToDelete.isEmpty()) {
+            throw new ProductNotFoundException("Nie ma produktu o id: " + id + " w bazie");
         }
         productsRepository.deleteById(id);
+
     }
 
     public ProductsDTO update(ProductsDTO productsDTO) {
-        if(productsDTO.getProductId() == null) {
+        if (productsDTO.getProductId() == null) {
             throw new IllegalArgumentException("ID produktu nie może byc puste!");
         }
+
         Products product = productsMapper.toEntity(productsDTO);
         Products updatedProduct = productsRepository.save(product);
         return productsMapper.toDTO(updatedProduct);
