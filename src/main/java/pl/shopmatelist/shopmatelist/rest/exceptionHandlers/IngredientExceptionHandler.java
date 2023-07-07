@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import pl.shopmatelist.shopmatelist.exceptions.IngredientNofFoundException;
-import pl.shopmatelist.shopmatelist.rest.errorResponse.ErrorResponse;
+import pl.shopmatelist.shopmatelist.dto.response.ErrorResponse;
 
 @ControllerAdvice
 public class IngredientExceptionHandler {

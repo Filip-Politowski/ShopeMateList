@@ -40,9 +40,10 @@ public class MarketService {
     public MarketDTO save(MarketDTO marketDTO) {
         Market market = marketMapper.toEntity(marketDTO);
         List<Market> markets = marketRepository.findAll();
-        if (markets.stream().anyMatch(marketsDB -> marketsDB.getMarketName().equals(market.getMarketName().toUpperCase().trim()))) {
+        if (markets.stream().anyMatch(marketsDB -> marketsDB.getMarketName().toUpperCase().equals(market.getMarketName().toUpperCase().trim()))) {
             throw new IllegalArgumentException("Taki market już istnieje w bazie");
         }
+        market.setMarketName(market.getMarketName().toUpperCase());
         Market savedMarket = marketRepository.save(market);
         return marketMapper.toDto(savedMarket);
     }
