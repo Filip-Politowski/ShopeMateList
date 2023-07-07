@@ -1,4 +1,4 @@
-package pl.shopmatelist.shopmatelist.dto.response;
+package pl.shopmatelist.shopmatelist.entity.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

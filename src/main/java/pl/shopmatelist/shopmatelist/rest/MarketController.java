@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import pl.shopmatelist.shopmatelist.dto.MarketDTO;
-import pl.shopmatelist.shopmatelist.dto.response.DeleteResponse;
+import pl.shopmatelist.shopmatelist.entity.response.DeleteResponse;
 import pl.shopmatelist.shopmatelist.exceptions.AuthorizationException;
 import pl.shopmatelist.shopmatelist.exceptions.IllegalArgumentException;
 import pl.shopmatelist.shopmatelist.exceptions.MarketNotFoundException;
