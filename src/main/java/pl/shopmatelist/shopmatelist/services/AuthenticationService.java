@@ -1,8 +1,8 @@
 package pl.shopmatelist.shopmatelist.services;
 
-import pl.shopmatelist.shopmatelist.dto.request.SignInRequest;
-import pl.shopmatelist.shopmatelist.dto.request.SignUpRequest;
-import pl.shopmatelist.shopmatelist.dto.response.JwtAuthenticationResponse;
+import pl.shopmatelist.shopmatelist.entity.request.SignInRequest;
+import pl.shopmatelist.shopmatelist.entity.request.SignUpRequest;
+import pl.shopmatelist.shopmatelist.entity.response.JwtAuthenticationResponse;
 
 public interface AuthenticationService {
     JwtAuthenticationResponse signup(SignUpRequest request);

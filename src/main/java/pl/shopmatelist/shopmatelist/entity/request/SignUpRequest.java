@@ -1,4 +1,4 @@
-package pl.shopmatelist.shopmatelist.dto.request;
+package pl.shopmatelist.shopmatelist.entity.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
