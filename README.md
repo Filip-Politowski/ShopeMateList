@@ -74,7 +74,7 @@ Endpointy te generują token autoryzacyjny umożliwiający dostęp do aplikacji.
 ```
 Wszystkie inne endpointy muszą posiadać poprawnie sformułowany nagłówek 'Authorization' w celu uwierzytelnienia użytkownika.
 
-Zbiór wszystkich endpointów znajduje się w Open API pod linkiem:
+Zbiór wszystkich endpointów po uruchomieniu aplikacji znajduje się w Open API pod linkiem:
 http://localhost:8080/swagger-ui/index.html
 
 # Instrukcja uruchomienia
