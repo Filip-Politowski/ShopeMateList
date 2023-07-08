@@ -3,7 +3,8 @@ package pl.shopmatelist.shopmatelist.services;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import pl.shopmatelist.shopmatelist.dto.ProductsDTO;
+import pl.shopmatelist.shopmatelist.dto.request.RequestProductsDTO;
+import pl.shopmatelist.shopmatelist.dto.response.ResponseProductsDTO;
 import pl.shopmatelist.shopmatelist.entity.Products;
 import pl.shopmatelist.shopmatelist.exceptions.IllegalArgumentException;
 import pl.shopmatelist.shopmatelist.exceptions.ProductNotFoundException;
@@ -21,7 +22,7 @@ public class ProductsService {
     private final ProductsMapper productsMapper;
 
 
-    public ProductsDTO findById(Long id) {
+    public ResponseProductsDTO findById(Long id) {
         Optional<Products> optionalProduct = productsRepository.findById(id);
         if (optionalProduct.isPresent()) {
             Products product = optionalProduct.get();
@@ -30,15 +31,15 @@ public class ProductsService {
         throw new ProductNotFoundException("Nie ma produktu o podanym id:  " + id);
     }
 
-    public List<ProductsDTO> findAll() {
+    public List<ResponseProductsDTO> findAll() {
         List<Products> products = productsRepository.findAll();
         return productsMapper.toDtoList(products);
     }
 
 
-    public ProductsDTO createProducts(ProductsDTO productsDTO) {
+    public ResponseProductsDTO createProducts(RequestProductsDTO requestProductsDTO) {
         List<Products> products = productsRepository.findAll();
-        Products product = productsMapper.toEntity(productsDTO);
+        Products product = productsMapper.toEntity(requestProductsDTO);
         boolean exist = products.stream().anyMatch(productInDB -> productInDB.getProductName().equals(product.getProductName().toLowerCase()) || productInDB.getProductId().equals(product.getProductId()));
         if (exist) {
             throw new IllegalArgumentException("Produkt o nazwie: " + product.getProductName() + " już istnieje");
@@ -59,12 +60,12 @@ public class ProductsService {
 
     }
 
-    public ProductsDTO update(ProductsDTO productsDTO) {
-        if (productsDTO.getProductId() == null) {
+    public ResponseProductsDTO update(RequestProductsDTO requestProductsDTO) {
+        if (requestProductsDTO.getProductId() == null) {
             throw new IllegalArgumentException("ID produktu nie może byc puste!");
         }
 
-        Products product = productsMapper.toEntity(productsDTO);
+        Products product = productsMapper.toEntity(requestProductsDTO);
         Products updatedProduct = productsRepository.save(product);
         return productsMapper.toDTO(updatedProduct);
     }

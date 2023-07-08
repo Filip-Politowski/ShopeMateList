@@ -1,12 +1,9 @@
 package pl.shopmatelist.shopmatelist.rest;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import pl.shopmatelist.shopmatelist.dto.IngredientsDTO;
-import pl.shopmatelist.shopmatelist.exceptions.AuthorizationException;
-import pl.shopmatelist.shopmatelist.exceptions.IllegalArgumentException;
-import pl.shopmatelist.shopmatelist.exceptions.IngredientNofFoundException;
+import pl.shopmatelist.shopmatelist.dto.request.RequestIngredientsDTO;
+import pl.shopmatelist.shopmatelist.dto.response.ResponseIngredientsDTO;
 import pl.shopmatelist.shopmatelist.services.IngredientsService;
 
 import java.util.List;
@@ -20,23 +17,23 @@ public class IngredientsController {
 
 
     @GetMapping("/{id}")
-    public IngredientsDTO findIngredientById(@PathVariable Long id) {
+    public ResponseIngredientsDTO findIngredientById(@PathVariable Long id) {
 
             return ingredientsService.findById(id);
 
     }
 
     @GetMapping("/recipe/{id}")
-    public List<IngredientsDTO> findAllIngredients(@PathVariable Long id) {
+    public List<ResponseIngredientsDTO> findAllIngredients(@PathVariable Long id) {
 
             return ingredientsService.findAllByRecipeId(id);
 
     }
 
     @PostMapping()
-    public IngredientsDTO createIngredient(@RequestBody IngredientsDTO ingredientsDTO) {
+    public ResponseIngredientsDTO createIngredient(@RequestBody RequestIngredientsDTO requestIngredientsDTO) {
 
-            return ingredientsService.save(ingredientsDTO);
+            return ingredientsService.save(requestIngredientsDTO);
 
     }
 
@@ -47,9 +44,9 @@ public class IngredientsController {
     }
 
     @PutMapping()
-    public IngredientsDTO updateIngredient(@RequestBody IngredientsDTO ingredientsDTO) {
+    public ResponseIngredientsDTO updateIngredient(@RequestBody RequestIngredientsDTO requestIngredientsDTO) {
 
-            return ingredientsService.update(ingredientsDTO);
+            return ingredientsService.update(requestIngredientsDTO);
     }
 
 }

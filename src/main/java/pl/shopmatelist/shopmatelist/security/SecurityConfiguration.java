@@ -1,4 +1,4 @@
-package pl.shopmatelist.shopmatelist.configuration;
+package pl.shopmatelist.shopmatelist.security;
 
 
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import pl.shopmatelist.shopmatelist.services.UserService;
+import pl.shopmatelist.shopmatelist.services.security.UserService;
 
 
 @Configuration

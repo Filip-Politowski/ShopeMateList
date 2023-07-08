@@ -2,9 +2,9 @@ package pl.shopmatelist.shopmatelist.mapper;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import pl.shopmatelist.shopmatelist.dto.ProductsOnListDTO;
+import pl.shopmatelist.shopmatelist.dto.request.RequestProductsOnListDTO;
+import pl.shopmatelist.shopmatelist.dto.response.ResponseProductsOnListDTO;
 import pl.shopmatelist.shopmatelist.entity.Products;
 import pl.shopmatelist.shopmatelist.entity.ProductsOnList;
 import pl.shopmatelist.shopmatelist.entity.ShoppingList;
@@ -23,8 +23,8 @@ public class ProductsOnListMapper {
 
 
 
-    public ProductsOnListDTO toDto(ProductsOnList productsOnList){
-        ProductsOnListDTO dto = new ProductsOnListDTO();
+    public ResponseProductsOnListDTO toDto(ProductsOnList productsOnList){
+        ResponseProductsOnListDTO dto = new ResponseProductsOnListDTO();
         dto.setListItemId(productsOnList.getListItemId());
         dto.setQuantity(productsOnList.getQuantity());
         dto.setProductId(productsOnList.getProduct().getProductId());
@@ -34,7 +34,7 @@ public class ProductsOnListMapper {
         return dto;
     }
 
-    public ProductsOnList toEntity(ProductsOnListDTO dto){
+    public ProductsOnList toEntity(RequestProductsOnListDTO dto){
 
         ProductsOnList productsOnList = new ProductsOnList();
 
@@ -50,7 +50,7 @@ public class ProductsOnListMapper {
         return productsOnList;
     }
 
-    public List<ProductsOnListDTO> toDtoList(List<ProductsOnList> productsOnLists){
+    public List<ResponseProductsOnListDTO> toDtoList(List<ProductsOnList> productsOnLists){
         return productsOnLists.stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());

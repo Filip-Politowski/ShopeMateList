@@ -1,4 +1,4 @@
-package pl.shopmatelist.shopmatelist.services;
+package pl.shopmatelist.shopmatelist.services.security;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
 import pl.shopmatelist.shopmatelist.entity.User;

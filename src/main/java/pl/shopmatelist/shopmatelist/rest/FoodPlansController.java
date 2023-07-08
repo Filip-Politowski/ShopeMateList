@@ -1,11 +1,9 @@
 package pl.shopmatelist.shopmatelist.rest;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import pl.shopmatelist.shopmatelist.dto.FoodPlansDTO;
-import pl.shopmatelist.shopmatelist.exceptions.FoodPlanNotFoundException;
-import pl.shopmatelist.shopmatelist.exceptions.IllegalArgumentException;
+import pl.shopmatelist.shopmatelist.dto.request.RequestFoodPlansDTO;
+import pl.shopmatelist.shopmatelist.dto.response.ResponseFoodPlansDTO;
 import pl.shopmatelist.shopmatelist.services.FoodPlansService;
 
 import java.util.List;
@@ -18,21 +16,21 @@ public class FoodPlansController {
     private final FoodPlansService foodPlansService;
 
     @GetMapping("/{id}")
-    public FoodPlansDTO FindFoodPlanById(@PathVariable Long id) {
+    public ResponseFoodPlansDTO FindFoodPlanById(@PathVariable Long id) {
 
             return foodPlansService.findById(id);
     }
 
     @GetMapping()
-    public List<FoodPlansDTO> findAllFoodPlans() {
+    public List<ResponseFoodPlansDTO> findAllFoodPlans() {
 
             return foodPlansService.findAll();
     }
 
     @PostMapping()
-    public FoodPlansDTO createFoodPlan(@RequestBody FoodPlansDTO foodPlansDTO) {
+    public ResponseFoodPlansDTO createFoodPlan(@RequestBody RequestFoodPlansDTO requestFoodPlansDTO) {
 
-            return foodPlansService.save(foodPlansDTO);
+            return foodPlansService.save(requestFoodPlansDTO);
     }
 
     @DeleteMapping("/{id}")
@@ -42,8 +40,8 @@ public class FoodPlansController {
     }
 
     @PutMapping()
-    public FoodPlansDTO updateFoodPlan(FoodPlansDTO foodPlansDTO) {
-            return foodPlansService.update(foodPlansDTO);
+    public ResponseFoodPlansDTO updateFoodPlan(RequestFoodPlansDTO requestFoodPlansDTO) {
+            return foodPlansService.update(requestFoodPlansDTO);
 
     }
 

@@ -2,7 +2,8 @@ package pl.shopmatelist.shopmatelist.services;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.shopmatelist.shopmatelist.dto.MarketDTO;
+import pl.shopmatelist.shopmatelist.dto.request.RequestMarketDTO;
+import pl.shopmatelist.shopmatelist.dto.response.ResponseMarketDTO;
 import pl.shopmatelist.shopmatelist.entity.Market;
 import pl.shopmatelist.shopmatelist.exceptions.IllegalArgumentException;
 import pl.shopmatelist.shopmatelist.exceptions.MarketNotFoundException;
@@ -20,7 +21,7 @@ public class MarketService {
     private final MarketMapper marketMapper;
 
 
-    public MarketDTO findById(Long id) {
+    public ResponseMarketDTO findById(Long id) {
         Optional<Market> optionalMarket = marketRepository.findById(id);
         if (optionalMarket.isPresent()) {
             Market market = optionalMarket.get();
@@ -29,7 +30,7 @@ public class MarketService {
         throw new MarketNotFoundException("Nie ma takiego marketu w bazie danych");
     }
 
-    public List<MarketDTO> findAll() {
+    public List<ResponseMarketDTO> findAll() {
         List<Market> markets = marketRepository.findAll();
         if (markets.isEmpty()) {
             throw new MarketNotFoundException("Baza marketów jest pusta");
@@ -37,8 +38,8 @@ public class MarketService {
         return marketMapper.toDtoList(markets);
     }
 
-    public MarketDTO save(MarketDTO marketDTO) {
-        Market market = marketMapper.toEntity(marketDTO);
+    public ResponseMarketDTO save(RequestMarketDTO requestMarketDTO) {
+        Market market = marketMapper.toEntity(requestMarketDTO);
         List<Market> markets = marketRepository.findAll();
         if (markets.stream().anyMatch(marketsDB -> marketsDB.getMarketName().toUpperCase().equals(market.getMarketName().toUpperCase().trim()))) {
             throw new IllegalArgumentException("Taki market już istnieje w bazie");
@@ -56,11 +57,11 @@ public class MarketService {
         marketRepository.deleteById(id);
     }
 
-    public MarketDTO update(MarketDTO marketDTO) {
-        if (marketDTO.getMarketId() == null) {
+    public ResponseMarketDTO update(RequestMarketDTO requestMarketDTO) {
+        if (requestMarketDTO.getMarketId() == null) {
             throw new IllegalArgumentException("Należy podać id Marketu");
         }
-        Market market = marketMapper.toEntity(marketDTO);
+        Market market = marketMapper.toEntity(requestMarketDTO);
         Market updatedMarket = marketRepository.save(market);
         return marketMapper.toDto(updatedMarket);
     }

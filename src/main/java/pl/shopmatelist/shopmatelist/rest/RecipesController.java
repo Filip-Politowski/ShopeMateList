@@ -1,19 +1,12 @@
 package pl.shopmatelist.shopmatelist.rest;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
-import pl.shopmatelist.shopmatelist.dto.RecipesDTO;
-import pl.shopmatelist.shopmatelist.exceptions.IllegalArgumentException;
-import pl.shopmatelist.shopmatelist.exceptions.RecipeNotFoundException;
+import pl.shopmatelist.shopmatelist.dto.request.RequestRecipesDTO;
+import pl.shopmatelist.shopmatelist.dto.response.ResponseRecipesDTO;
 import pl.shopmatelist.shopmatelist.services.RecipesService;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/recipe")
@@ -25,21 +18,21 @@ public class RecipesController {
 
 
     @GetMapping("/{id}")
-    public RecipesDTO findRecipeById(@PathVariable Long id) {
+    public ResponseRecipesDTO findRecipeById(@PathVariable Long id) {
 
             return  recipesService.findById(id);
 
     }
 
     @GetMapping()
-    public List<RecipesDTO> findAllRecipes(){
+    public List<ResponseRecipesDTO> findAllRecipes(){
         return recipesService.findAll();
     }
 
     @PostMapping()
-    public RecipesDTO createRecipes(@RequestBody RecipesDTO recipesDTO) {
+    public ResponseRecipesDTO createRecipes(@RequestBody RequestRecipesDTO requestRecipesDTO) {
 
-           return  recipesService.save(recipesDTO);
+           return  recipesService.save(requestRecipesDTO);
     }
 
     @DeleteMapping("/{id}")
@@ -50,9 +43,9 @@ public class RecipesController {
     }
 
     @PutMapping()
-    public RecipesDTO updateRecipes(@RequestBody RecipesDTO recipesDTO) {
+    public ResponseRecipesDTO updateRecipes(@RequestBody RequestRecipesDTO requestRecipesDTO) {
 
-            return recipesService.update(recipesDTO);
+            return recipesService.update(requestRecipesDTO);
 
     }
 

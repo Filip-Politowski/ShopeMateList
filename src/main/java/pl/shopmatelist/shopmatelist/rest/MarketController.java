@@ -5,7 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import pl.shopmatelist.shopmatelist.dto.MarketDTO;
+import pl.shopmatelist.shopmatelist.dto.request.RequestMarketDTO;
+import pl.shopmatelist.shopmatelist.dto.response.ResponseMarketDTO;
 import pl.shopmatelist.shopmatelist.entity.response.DeleteResponse;
 import pl.shopmatelist.shopmatelist.exceptions.AuthorizationException;
 import pl.shopmatelist.shopmatelist.exceptions.IllegalArgumentException;
@@ -22,7 +23,7 @@ public class MarketController {
     private final MarketService marketService;
 
     @GetMapping("/{id}")
-    public MarketDTO findMarketById(@PathVariable Long id) {
+    public ResponseMarketDTO findMarketById(@PathVariable Long id) {
         try {
             return marketService.findById(id);
         } catch (MarketNotFoundException exc) {
@@ -32,7 +33,7 @@ public class MarketController {
     }
 
     @GetMapping()
-    public List<MarketDTO> findAllMarkets() {
+    public List<ResponseMarketDTO> findAllMarkets() {
         try {
             return marketService.findAll();
         } catch (MarketNotFoundException exc) {
@@ -41,13 +42,9 @@ public class MarketController {
     }
 
     @PostMapping()
-    public MarketDTO createMarket(@RequestBody MarketDTO marketDTO, Authentication authentication) {
+    public ResponseMarketDTO createMarket(@RequestBody RequestMarketDTO requestMarketDTO, Authentication authentication) {
         if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ADMIN"))) {
-            try {
-                return marketService.save(marketDTO);
-            } catch (IllegalArgumentException exc) {
-                throw new IllegalArgumentException(exc.getMessage());
-            }
+                return marketService.save(requestMarketDTO);
         }
         throw new AuthorizationException("Potrzebne uprawnienia administratora");
     }
@@ -55,25 +52,16 @@ public class MarketController {
     @DeleteMapping("/{id}")
     public ResponseEntity<DeleteResponse> deleteMarket(@PathVariable Long id, Authentication authentication) {
         if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ADMIN"))) {
-            try {
                 marketService.deleteById(id);
                 return new ResponseEntity<>(new DeleteResponse("Market usunięty poprawnie", 200), HttpStatus.OK);
-            } catch (MarketNotFoundException exc) {
-                throw new MarketNotFoundException(exc.getMessage());
-            }
         }
         throw new AuthorizationException("Potrzebne uprawnienia administratora");
     }
 
     @PutMapping()
-    public MarketDTO updateMarket(@RequestBody MarketDTO marketDTO, Authentication authentication) {
+    public ResponseMarketDTO updateMarket(@RequestBody RequestMarketDTO requestMarketDTO, Authentication authentication) {
         if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ADMIN"))) {
-            try {
-                return marketService.update(marketDTO);
-            } catch (IllegalArgumentException exc) {
-                throw new IllegalArgumentException(exc.getMessage());
-            }
-
+                return marketService.update(requestMarketDTO);
         }
         throw new AuthorizationException("Potrzebne uprawnienia administratora");
     }
