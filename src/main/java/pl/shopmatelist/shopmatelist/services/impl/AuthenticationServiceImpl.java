@@ -3,6 +3,8 @@ package pl.shopmatelist.shopmatelist.services.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.shopmatelist.shopmatelist.entity.request.SignInRequest;
@@ -10,6 +12,7 @@ import pl.shopmatelist.shopmatelist.entity.request.SignUpRequest;
 import pl.shopmatelist.shopmatelist.entity.response.JwtAuthenticationResponse;
 import pl.shopmatelist.shopmatelist.entity.Role;
 import pl.shopmatelist.shopmatelist.entity.User;
+import pl.shopmatelist.shopmatelist.exceptions.UserNotFoundException;
 import pl.shopmatelist.shopmatelist.repository.UserRepository;
 import pl.shopmatelist.shopmatelist.services.AuthenticationService;
 import pl.shopmatelist.shopmatelist.services.JwtService;
@@ -50,5 +53,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String jwt = jwtService.generateToken(user);
 
         return JwtAuthenticationResponse.builder().token(jwt).build();
+    }
+    public User authenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return userRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UserNotFoundException("Nie ma takiego użytkownika w bazie"));
     }
 }

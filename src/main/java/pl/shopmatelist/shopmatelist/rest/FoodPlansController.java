@@ -18,47 +18,32 @@ public class FoodPlansController {
     private final FoodPlansService foodPlansService;
 
     @GetMapping("/{id}")
-    public FoodPlansDTO FindFoodPlanById(@PathVariable Long id, @RequestHeader("Authorization") String token) {
-        try {
-            return foodPlansService.findById(id, token);
-        } catch (FoodPlanNotFoundException exc) {
-            throw new FoodPlanNotFoundException(exc.getMessage());
-        }
+    public FoodPlansDTO FindFoodPlanById(@PathVariable Long id) {
 
+            return foodPlansService.findById(id);
     }
 
     @GetMapping()
-    public List<FoodPlansDTO> findAllFoodPlans(@RequestHeader("Authorization") String token) {
-        try {
-            return foodPlansService.findAll(token);
-        } catch (FoodPlanNotFoundException exc) {
-            throw new FoodPlanNotFoundException(exc.getMessage());
-        }
+    public List<FoodPlansDTO> findAllFoodPlans() {
+
+            return foodPlansService.findAll();
     }
 
     @PostMapping()
-    public FoodPlansDTO createFoodPlan(@RequestBody FoodPlansDTO foodPlansDTO, @RequestHeader("Authorization") String token) {
-        try {
-            return foodPlansService.save(foodPlansDTO, token);
-        } catch (IllegalArgumentException exc) {
-            throw new IllegalArgumentException(exc.getMessage());
-        }
+    public FoodPlansDTO createFoodPlan(@RequestBody FoodPlansDTO foodPlansDTO) {
+
+            return foodPlansService.save(foodPlansDTO);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteFoodPlanById(@PathVariable Long id, @RequestHeader("Authorization") String token) {
-       try {
-           foodPlansService.deleteById(id, token);
-       }catch (FoodPlanNotFoundException exc) {
-           throw new FoodPlanNotFoundException(exc.getMessage());
-       }
+    public void deleteFoodPlanById(@PathVariable Long id) {
 
+           foodPlansService.deleteById(id);
     }
 
-
     @PutMapping()
-    public FoodPlansDTO updateFoodPlan(FoodPlansDTO foodPlansDTO, @RequestHeader("Authorization") String token) {
-            return foodPlansService.update(foodPlansDTO, token);
+    public FoodPlansDTO updateFoodPlan(FoodPlansDTO foodPlansDTO) {
+            return foodPlansService.update(foodPlansDTO);
 
     }
 

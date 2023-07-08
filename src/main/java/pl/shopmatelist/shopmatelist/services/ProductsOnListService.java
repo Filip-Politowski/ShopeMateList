@@ -1,9 +1,7 @@
 package pl.shopmatelist.shopmatelist.services;
 
 import lombok.AllArgsConstructor;
-import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
-
 import pl.shopmatelist.shopmatelist.dto.IngredientsDTO;
 import pl.shopmatelist.shopmatelist.dto.ProductsOnListDTO;
 import pl.shopmatelist.shopmatelist.dto.ShoppingListDTO;
@@ -19,12 +17,11 @@ import pl.shopmatelist.shopmatelist.mapper.WeeklyFoodPlanMapper;
 import pl.shopmatelist.shopmatelist.repository.ProductsOnListRepository;
 import pl.shopmatelist.shopmatelist.repository.ShoppingListRepository;
 
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 
 @Service
 @AllArgsConstructor
@@ -38,17 +35,17 @@ public class ProductsOnListService {
     private final ShoppingListMapper shoppingListMapper;
     private final WeeklyFoodPlanService weeklyFoodPlanService;
     private final WeeklyFoodPlanMapper weeklyFoodPlanMapper;
-    private final UserService userService;
     private final ShoppingListRepository shoppingListRepository;
+    private final AuthenticationService authenticationService;
 
 
-    public ProductsOnListDTO findById(Long id, String token) {
+    public ProductsOnListDTO findById(Long id) {
 
         Optional<ProductsOnList> optionalProductsOnList = productsOnListRepository.findById(id);
 
         if (optionalProductsOnList.isPresent()) {
             ProductsOnList foundProductOnList = optionalProductsOnList.get();
-            if (userAuthorization(token, foundProductOnList)) {
+            if (userAuthorization(authenticationService.authenticatedUser(), foundProductOnList)) {
 
                 return productsOnListMapper.toDto(foundProductOnList);
             } else {
@@ -58,9 +55,9 @@ public class ProductsOnListService {
         throw new ProductOnListNotFoundException("Nie ma takiego produktu na liście zakupowej");
     }
 
-    public List<ProductsOnListDTO> findAllByShoppingListId(Long shoppingListId, String token) {
-        User user = userService.userFromToken(token);
-        List<ShoppingList> userShoppingLists = shoppingListRepository.findAllByUser(user);
+    public List<ProductsOnListDTO> findAllByShoppingListId(Long shoppingListId) {
+
+        List<ShoppingList> userShoppingLists = shoppingListRepository.findAllByUser(authenticationService.authenticatedUser());
 
         boolean hasMatchingShoppingList = userShoppingLists.stream()
                 .anyMatch(shoppingList -> shoppingList.getShoppingListId().equals(shoppingListId));
@@ -73,13 +70,12 @@ public class ProductsOnListService {
 
     }
 
-    public ProductsOnListDTO save(ProductsOnListDTO productsOnListDTO, String token) {
+    public ProductsOnListDTO save(ProductsOnListDTO productsOnListDTO) {
 
         ProductsOnList product = productsOnListMapper.toEntity(productsOnListDTO);
         Optional<ProductsOnList> existingProduct = productsOnListRepository.findByProductIdAndShoppingListId(product.getProduct().getProductId(), product.getShoppingList().getShoppingListId());
 
-        User user = userService.userFromToken(token);
-        List<ShoppingList> userShoppingList = shoppingListRepository.findAllByUser(user);
+        List<ShoppingList> userShoppingList = shoppingListRepository.findAllByUser(authenticationService.authenticatedUser());
 
         boolean hasMatchingShoppingList = userShoppingList.stream()
                 .anyMatch(shoppingList -> shoppingList.getShoppingListId().equals(product.getShoppingList().getShoppingListId()));
@@ -105,13 +101,13 @@ public class ProductsOnListService {
 
     }
 
-    public void deleteById(Long id, String token) {
+    public void deleteById(Long id) {
 
         Optional<ProductsOnList> optionalProductsOnList = productsOnListRepository.findById(id);
 
         if (optionalProductsOnList.isPresent()) {
             ProductsOnList productToDelete = optionalProductsOnList.get();
-            if (userAuthorization(token, productToDelete)) {
+            if (userAuthorization(authenticationService.authenticatedUser(), productToDelete)) {
                 productsOnListRepository.delete(productToDelete);
             } else {
                 throw new AuthorizationException("Brak uprawnień do usunięcia tego produktu");
@@ -122,7 +118,7 @@ public class ProductsOnListService {
     }
 
 
-    public ProductsOnListDTO update(ProductsOnListDTO productsOnListDTO, String token) {
+    public ProductsOnListDTO update(ProductsOnListDTO productsOnListDTO) {
 
         if (productsOnListDTO.getListItemId() == null) {
             throw new IllegalArgumentException("Należy podać id produktu na liście");
@@ -130,8 +126,7 @@ public class ProductsOnListService {
 
         ProductsOnList product = productsOnListMapper.toEntity(productsOnListDTO);
 
-
-        if (userAuthorization(token, product)) {
+        if (userAuthorization(authenticationService.authenticatedUser(), product)) {
             Optional<ProductsOnList> foundProductOnList = productsOnListRepository.findById(product.getListItemId());
             if (foundProductOnList.isPresent()) {
                 ProductsOnList productToSet = foundProductOnList.get();
@@ -145,14 +140,14 @@ public class ProductsOnListService {
     }
 
 
-    public List<ProductsOnListDTO> addingAllProductsFromRecipe(Long recipeId, Long shoppingListId, String token) {
+    public List<ProductsOnListDTO> addingAllProductsFromRecipe(Long recipeId, Long shoppingListId) {
 
-        List<IngredientsDTO> ingredientsDTO = ingredientsService.findAllByRecipeId(recipeId, token);
+        List<IngredientsDTO> ingredientsDTO = ingredientsService.findAllByRecipeId(recipeId);
 
 
         List<Ingredients> ingredients = ingredientsDTO.stream()
                 .map(ingredientsMapper::toEntity).toList();
-        ShoppingListDTO shoppingListDto = shoppingListService.findById(shoppingListId, token);
+        ShoppingListDTO shoppingListDto = shoppingListService.findById(shoppingListId);
         ShoppingList shoppingList = shoppingListMapper.toEntity(shoppingListDto);
 
 
@@ -185,8 +180,8 @@ public class ProductsOnListService {
         return productsOnListMapper.toDtoList(savedProductsOnList);
     }
 
-    public List<List<ProductsOnListDTO>> addingProductsFromWeeklyPlan(Long foodPlanId, Long shoppingListId, String token) {
-        List<WeeklyFoodPlanDTO> weeklyFoodPlansDTO = weeklyFoodPlanService.findAllByFoodPlanId(foodPlanId, token);
+    public List<List<ProductsOnListDTO>> addingProductsFromWeeklyPlan(Long foodPlanId, Long shoppingListId ) {
+        List<WeeklyFoodPlanDTO> weeklyFoodPlansDTO = weeklyFoodPlanService.findAllByFoodPlanId(foodPlanId);
         List<WeeklyFoodPlan> weeklyFoodPlans = weeklyFoodPlansDTO.stream()
                 .map(weeklyFoodPlanMapper::toEntity).toList();
 
@@ -198,17 +193,15 @@ public class ProductsOnListService {
 
         for (Recipes recipe : recipes) {
             Long recipeId = recipe.getRecipeId();
-            List<ProductsOnListDTO> productsOnListDTOS = addingAllProductsFromRecipe(recipeId, shoppingListId, token);
+            List<ProductsOnListDTO> productsOnListDTOS = addingAllProductsFromRecipe(recipeId, shoppingListId);
             allProductsOnListDTOS.add(productsOnListDTOS);
         }
         return allProductsOnListDTOS;
 
     }
 
-    public boolean userAuthorization(String token, ProductsOnList productsOnList) {
-        User user = userService.userFromToken(token);
+    public boolean userAuthorization(User user, ProductsOnList productsOnList) {
         List<ShoppingList> userShoppingLists = shoppingListRepository.findAllByUser(user);
-
         return userShoppingLists.stream()
                 .anyMatch(shoppingList -> shoppingList.getShoppingListId().equals(productsOnList.getShoppingList().getShoppingListId()));
     }

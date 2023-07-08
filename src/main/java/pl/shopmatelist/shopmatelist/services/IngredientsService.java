@@ -1,7 +1,6 @@
 package pl.shopmatelist.shopmatelist.services;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
 import pl.shopmatelist.shopmatelist.dto.IngredientsDTO;
 import pl.shopmatelist.shopmatelist.entity.Ingredients;
@@ -13,9 +12,7 @@ import pl.shopmatelist.shopmatelist.exceptions.IngredientNofFoundException;
 import pl.shopmatelist.shopmatelist.mapper.IngredientsMapper;
 import pl.shopmatelist.shopmatelist.repository.IngredientsRepository;
 import pl.shopmatelist.shopmatelist.repository.RecipesRepository;
-
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -24,11 +21,12 @@ public class IngredientsService {
 
     private final IngredientsRepository ingredientsRepository;
     private final IngredientsMapper ingredientsMapper;
-    private final UserService userService;
     private final RecipesRepository recipesRepository;
+    private final AuthenticationService authenticationService;
 
 
-    public IngredientsDTO findById(Long ingredientId, String token) {
+
+    public IngredientsDTO findById(Long ingredientId) {
 
 
         Optional<Ingredients> optionalIngredient = ingredientsRepository.findById(ingredientId);
@@ -36,7 +34,7 @@ public class IngredientsService {
         if (optionalIngredient.isPresent()) {
             Ingredients ingredient = optionalIngredient.get();
 
-            if (userAuthorization(ingredient, token)) {
+            if (userAuthorization(ingredient, authenticationService.authenticatedUser())) {
                 return ingredientsMapper.toDTO(ingredient);
             } else {
                 throw new AuthorizationException("Nie masz dostępu do tego składnika");
@@ -46,14 +44,14 @@ public class IngredientsService {
 
     }
 
-    public List<IngredientsDTO> findAllByRecipeId(Long recipeId, String token) {
-        User user = userService.userFromToken(token);
-        List<Recipes> userRecipes = recipesRepository.findAllByUser(user);
-        boolean  hasMatchingRecipe = userRecipes.stream()
+    public List<IngredientsDTO> findAllByRecipeId(Long recipeId) {
+
+        List<Recipes> userRecipes = recipesRepository.findAllByUser(authenticationService.authenticatedUser());
+        boolean hasMatchingRecipe = userRecipes.stream()
                 .anyMatch(recipe -> recipe.getRecipeId().equals(recipeId));
         if (hasMatchingRecipe) {
             List<Ingredients> ingredients = ingredientsRepository.findAllByRecipe_RecipeId(recipeId);
-            if(ingredients.isEmpty()){
+            if (ingredients.isEmpty()) {
                 throw new IngredientNofFoundException("Nie ma żadnych składników");
             }
             return ingredientsMapper.toDtoList(ingredients);
@@ -61,16 +59,16 @@ public class IngredientsService {
         throw new AuthorizationException("Nie masz dostępu do tych składników");
     }
 
-    public IngredientsDTO save(IngredientsDTO ingredientsDTO, String token) {
+    public IngredientsDTO save(IngredientsDTO ingredientsDTO) {
 
         List<Ingredients> ingredients = ingredientsRepository.findAllByRecipe_RecipeId(ingredientsDTO.getRecipeId());
-        if(ingredients.stream().anyMatch(userIngredients -> userIngredients.getProduct().getProductId().equals(ingredientsDTO.getProductId()))){
+        if (ingredients.stream().anyMatch(userIngredients -> userIngredients.getProduct().getProductId().equals(ingredientsDTO.getProductId()))) {
             throw new IllegalArgumentException("Dany składnik znajduje się już na liście, nie możesz dodać go ponownie");
         }
 
         Ingredients ingredient = ingredientsMapper.toEntity(ingredientsDTO);
 
-        if(userAuthorization(ingredient, token)) {
+        if (userAuthorization(ingredient, authenticationService.authenticatedUser())) {
             Ingredients savedIngredients = ingredientsRepository.save(ingredient);
             return ingredientsMapper.toDTO(savedIngredients);
         }
@@ -78,14 +76,14 @@ public class IngredientsService {
 
     }
 
-    public void deleteById(Long id, String token) {
+    public void deleteById(Long id) {
 
         Optional<Ingredients> optionalIngredient = ingredientsRepository.findById(id);
 
         if (optionalIngredient.isPresent()) {
             Ingredients ingredient = optionalIngredient.get();
 
-            if (userAuthorization(ingredient, token)) {
+            if (userAuthorization(ingredient, authenticationService.authenticatedUser())) {
                 ingredientsRepository.deleteById(id);
                 return;
             }
@@ -94,17 +92,17 @@ public class IngredientsService {
         throw new IngredientNofFoundException("Nie ma składnika o id: " + id);
     }
 
-    public IngredientsDTO update(IngredientsDTO ingredientsDTO, String token) {
+    public IngredientsDTO update(IngredientsDTO ingredientsDTO) {
 
-        if(ingredientsDTO.getIngredientId() == null) {
+        if (ingredientsDTO.getIngredientId() == null) {
             throw new java.lang.IllegalArgumentException("Należy podać id składnika");
         }
 
         Ingredients ingredients = ingredientsMapper.toEntity(ingredientsDTO);
 
-        if(userAuthorization(ingredients, token)) {
+        if (userAuthorization(ingredients, authenticationService.authenticatedUser())) {
             Optional<Ingredients> foundIngredient = ingredientsRepository.findById(ingredients.getIngredientId());
-            if(foundIngredient.isPresent()) {
+            if (foundIngredient.isPresent()) {
                 Ingredients ingredientToSet = foundIngredient.get();
                 ingredientToSet.setQuantity(ingredientsDTO.getQuantity());
                 Ingredients savedIngredients = ingredientsRepository.save(ingredientToSet);
@@ -116,13 +114,12 @@ public class IngredientsService {
 
     }
 
-    public boolean userAuthorization(Ingredients ingredient, String token) {
-        User user = userService.userFromToken(token);
+    public boolean userAuthorization(Ingredients ingredient, User user) {
+
         List<Recipes> userRecipes = recipesRepository.findAllByUser(user);
         return userRecipes.stream()
                 .anyMatch(recipe -> recipe.getRecipeId().equals(ingredient.getRecipe().getRecipeId()));
     }
-
 
 
 
