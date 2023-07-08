@@ -1,6 +1,7 @@
 package pl.shopmatelist.shopmatelist.rest;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import pl.shopmatelist.shopmatelist.dto.ProductsOnListDTO;
 import pl.shopmatelist.shopmatelist.dto.ShoppingListDTO;
@@ -28,8 +29,8 @@ public class ShoppingListController {
     }
 
     @GetMapping()
-    public List<ShoppingListDTO> findAllShoppingLists(@RequestHeader("Authorization") String token) {
-        return shoppingListService.findAll(token);
+    public List<ShoppingListDTO> findAllShoppingLists(Authentication authentication) {
+        return shoppingListService.findAll(authentication);
     }
 
 

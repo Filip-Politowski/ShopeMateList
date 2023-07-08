@@ -1,6 +1,7 @@
 package pl.shopmatelist.shopmatelist.services;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import pl.shopmatelist.shopmatelist.dto.ShoppingListDTO;
 import pl.shopmatelist.shopmatelist.entity.ProductsOnList;
@@ -43,8 +44,8 @@ public class ShoppingListService {
     }
 
 
-    public List<ShoppingListDTO> findAll(String token) {
-        User user = userService.userFromToken(token);
+    public List<ShoppingListDTO> findAll(Authentication authentication) {
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UserNotFoundException("Nie ma takiego uŻytkownika w bazie"));
         List<ShoppingList> shoppingLists = shoppingListRepository.findAllByUser(user);
         return shoppingListMapper.toDtoList(shoppingLists);
     }
