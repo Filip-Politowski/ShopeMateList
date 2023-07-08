@@ -78,3 +78,19 @@ Zbiór wszystkich endpointów po uruchomieniu aplikacji znajduje się w Open API
 http://localhost:8080/swagger-ui/index.html
 
 # Instrukcja uruchomienia
+W celu uruchomienia aplikacji należy:
+* Zweryfikować posiadanie na komputerze Java Development Kit (JDK), Maven, MySQL.
+* Skopiować repozytorium na komputer
+* Skonfigurować bazę danych:
+  * utworzyć bazę danych o nazwie ```shopping_list_database```
+  * zaktualizować plik ```application.properties```
+    * ustawić pola: 
+    ```
+     spring.datasource.username=(użytkownik na danym komputerze)
+     spring.datasource.password=(hasło do tego użytkownika)
+     ``` 
+    * wgrać dane do bazy danych z plików z rozszerzeniem ```.sql```, pliki znajdują się w katalogu```resources```
+* Uruchomić aplikacje ```shift + F10```
+* Po uruchomieniu aplikacji należy przejść do ```Swagger-UI``` pod linkiem: http://localhost:8080/swagger-ui/index.html
+* Następnie należy się zarejestrować oraz zalogować w celu uzyskania dostępu do wszystkich endpointów
+* Endpointy można również obsługiwać za pomocą ```POSTMAN```, należy pamiętać by przy procesie rejestracji i logowania ustawić autoryzację na ```none```. Po zalogowaniu na pozostałych endpointach należy ustawić autoryzację na bearerauth i skopiować token uzyskany podczas logowania
