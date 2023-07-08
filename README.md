@@ -23,9 +23,58 @@ Z takiego planu tygodniowego jest możliwość dodania wszystkich produktów, ja
 Umożliwia to w jednym ruchu stworzenie całej niezbędnej listy zakupowej, dodatkowo można dodać pojedyncze produkty do tak utworzonej listy zakupowej.
 Podobnie jak w przypadku przepisów, jeśli jakiś produkt znajduje się już na liście zakupowej, zostanie zwiększona tylko jego ilość.
 
-
 # Funkcje
-
+* Wyświetlanie dostępnych produktów
+* Wyświetlanie dostępnych marketów
+* Tworzenie listy zakupowej
+* Przechowywanie starych list zakupowych
+* Udostępnianie list zakupowych innym użytkownikom
+* Tworzenie przepisów kulinarnych
+* Tworzenie tygodniowych planów jedzeniowych
+* Dodawanie produktów do listy zakupowej na bazie przepisów
+* Dodawanie produktów dlo listy zakupowej na bazie tygodniowego planu jedzenia
+* Logowanie się do aplikacji
 # Struktura projektu
+W skład struktury projektu wchodzą:
+* Klasy konfiguracyjne
+* Encje
+* Klasy transferowe DTO
+* Customowe wyjątki
+* Repozytoria Spring Data JPA
+* Warstwy serwisów 
+* Kontrolery
+* Mappery
+* Swagger
+# Autoryzacja i uwierzytelnienie
+API wykorzystuje autoryzacje przez nagłówek (Header) z użyciem JWT tokenów.
+Każde zapytanie chronionego zasobu musi zawierać poprawnie sformułowany nagłówek 'Authorization', który zawiera JWT token.
+
+Przykład nagłówka 'Authorization': 
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+```
+# Endpointy API
+Aplikacja ma tylko dwa niezabezpieczone endpoointy, które służą do rejestracji oraz do logowania.
+Endpointy te generują token autoryzacyjny umożliwiający dostęp do aplikacji.
+* Endpoint rejestracji ```localhost:8080/api/auth/signup```
+```JSON
+{
+  "firstName": "string",
+  "lastName": "string",
+  "email": "string",
+  "password": "string"
+}
+```
+* Endpoint logowania ```localhost:8080/api/auth/signin```
+```JSON
+{
+  "email": "string",
+  "password": "string"
+}
+```
+Wszystkie inne endpointy muszą posiadać poprawnie sformułowany nagłówek 'Authorization' w celu uwierzytelnienia użytkownika.
+
+Zbiór wszystkich endpointów znajduje się w Open API pod linkiem:
+http://localhost:8080/swagger-ui/index.html
 
 # Instrukcja uruchomienia
