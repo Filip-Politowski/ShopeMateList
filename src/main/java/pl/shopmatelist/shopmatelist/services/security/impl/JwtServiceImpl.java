@@ -1,4 +1,4 @@
-package pl.shopmatelist.shopmatelist.services.impl;
+package pl.shopmatelist.shopmatelist.services.security.impl;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -8,7 +8,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import pl.shopmatelist.shopmatelist.services.JwtService;
+import pl.shopmatelist.shopmatelist.services.security.JwtService;
 
 import java.security.Key;
 import java.util.Date;

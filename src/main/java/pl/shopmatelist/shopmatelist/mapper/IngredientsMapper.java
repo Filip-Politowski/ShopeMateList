@@ -2,9 +2,9 @@ package pl.shopmatelist.shopmatelist.mapper;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import pl.shopmatelist.shopmatelist.dto.IngredientsDTO;
+import pl.shopmatelist.shopmatelist.dto.request.RequestIngredientsDTO;
+import pl.shopmatelist.shopmatelist.dto.response.ResponseIngredientsDTO;
 import pl.shopmatelist.shopmatelist.entity.Ingredients;
 import pl.shopmatelist.shopmatelist.entity.Products;
 import pl.shopmatelist.shopmatelist.entity.Recipes;
@@ -23,8 +23,8 @@ public class IngredientsMapper {
 
 
 
-    public IngredientsDTO toDTO(Ingredients ingredients) {
-        IngredientsDTO dto = new IngredientsDTO();
+    public ResponseIngredientsDTO toDTO(Ingredients ingredients) {
+        ResponseIngredientsDTO dto = new ResponseIngredientsDTO();
         dto.setIngredientId(ingredients.getIngredientId());
         dto.setRecipeId(ingredients.getRecipe().getRecipeId());
         dto.setProductId(ingredients.getProduct().getProductId());
@@ -34,7 +34,7 @@ public class IngredientsMapper {
         return dto;
     }
 
-    public Ingredients toEntity(IngredientsDTO dto) {
+    public Ingredients toEntity(RequestIngredientsDTO dto) {
         Ingredients ingredients = new Ingredients();
 
         ingredients.setIngredientId(dto.getIngredientId());
@@ -50,7 +50,7 @@ public class IngredientsMapper {
         return ingredients;
     }
 
-    public List<IngredientsDTO> toDtoList(List<Ingredients> ingredients) {
+    public List<ResponseIngredientsDTO> toDtoList(List<Ingredients> ingredients) {
         return ingredients.stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());

@@ -19,4 +19,6 @@ public interface IngredientsRepository extends JpaRepository<Ingredients, Long> 
 
     List<Ingredients> findAllByRecipe(Recipes recipeToDelete);
 
+
+
 }

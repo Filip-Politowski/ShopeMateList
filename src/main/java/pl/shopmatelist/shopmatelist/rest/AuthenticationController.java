@@ -10,7 +10,7 @@ import pl.shopmatelist.shopmatelist.entity.request.SignInRequest;
 import pl.shopmatelist.shopmatelist.entity.request.SignUpRequest;
 import pl.shopmatelist.shopmatelist.entity.response.JwtAuthenticationResponse;
 import pl.shopmatelist.shopmatelist.exceptions.AuthorizationException;
-import pl.shopmatelist.shopmatelist.services.AuthenticationService;
+import pl.shopmatelist.shopmatelist.services.security.AuthenticationService;
 
 @RestController
 @RequiredArgsConstructor

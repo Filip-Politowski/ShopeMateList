@@ -1,4 +1,4 @@
-package pl.shopmatelist.shopmatelist.dto;
+package pl.shopmatelist.shopmatelist.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,15 +8,9 @@ import pl.shopmatelist.shopmatelist.entity.MealType;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class WeeklyFoodPlanDTO {
-
+public class RequestWeeklyFoodPlanDTO {
     private Long weeklyFoodPlanId;
-    private Long foodPlanId;
-    private String foodPlanName;
     private MealType mealType;
+    private Long foodPlanId;
     private Long recipeId;
-    private String recipeName;
-
-
-
 }

@@ -1,15 +1,14 @@
-package pl.shopmatelist.shopmatelist.dto;
+package pl.shopmatelist.shopmatelist.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class RecipesDTO {
+@NoArgsConstructor
+public class RequestRecipesDTO {
     private Long recipeId;
-    private String recipeName;
     private String recipeDescription;
-    private Long UserId;
+    private String recipeName;
 }
