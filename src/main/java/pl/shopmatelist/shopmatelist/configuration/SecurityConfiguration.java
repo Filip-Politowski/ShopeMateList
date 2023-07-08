@@ -19,7 +19,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import pl.shopmatelist.shopmatelist.services.UserService;
 
 
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -32,7 +31,18 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/**"
+                                ,"/v2/api-docs"
+                                ,"/v3/api-docs"
+                                ,"/v3/api-docs/**"
+                                ,"/swagger-resources/**"
+                                ,"/swagger-resources"
+                                ,"/configuration/ui"
+                                ,"/configuration/security"
+                                ,"/swagger-ui/**"
+                                ,"/webjars/**"
+                                ,"/swagger-ui.html"
+                        ).permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
@@ -41,8 +51,9 @@ public class SecurityConfiguration {
 
 
     }
+
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -55,7 +66,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    AuthenticationManager authenticationManager (AuthenticationConfiguration config)throws Exception{
+    AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
 
     }
