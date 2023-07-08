@@ -20,58 +20,36 @@ public class IngredientsController {
 
 
     @GetMapping("/{id}")
-    public IngredientsDTO findIngredientById(@PathVariable Long id, @RequestHeader(value = "Authorization") String token) {
-        try {
-            return ingredientsService.findById(id, token);
-        } catch (IngredientNofFoundException exc) {
-            throw new IngredientNofFoundException(exc.getMessage());
-        } catch (AuthorizationException exc) {
-            throw new AuthorizationException(exc.getMessage());
-        }
+    public IngredientsDTO findIngredientById(@PathVariable Long id) {
+
+            return ingredientsService.findById(id);
+
     }
 
     @GetMapping("/recipe/{id}")
-    public List<IngredientsDTO> findAllIngredients(@PathVariable Long id, @RequestHeader(value = "Authorization") String token) {
-        try {
-            return ingredientsService.findAllByRecipeId(id, token);
-        } catch (IngredientNofFoundException exc) {
-            throw new IngredientNofFoundException(exc.getMessage());
-        } catch (AuthorizationException exc) {
-            throw new AuthorizationException(exc.getMessage());
-        }
+    public List<IngredientsDTO> findAllIngredients(@PathVariable Long id) {
+
+            return ingredientsService.findAllByRecipeId(id);
+
     }
 
     @PostMapping()
-    public IngredientsDTO createIngredient(@RequestBody IngredientsDTO ingredientsDTO, @RequestHeader(value = "Authorization") String token) {
-        try {
-            return ingredientsService.save(ingredientsDTO, token);
-        } catch (IllegalArgumentException exc) {
-            throw new IllegalArgumentException(exc.getMessage());
-        } catch (AuthorizationException exc) {
-            throw new AuthorizationException(exc.getMessage());
-        }
+    public IngredientsDTO createIngredient(@RequestBody IngredientsDTO ingredientsDTO) {
+
+            return ingredientsService.save(ingredientsDTO);
+
     }
 
     @DeleteMapping("/{id}")
-    public void deleteIngredientById(@PathVariable Long id, @RequestHeader(value = "Authorization") String token) {
-        try {
-            ingredientsService.deleteById(id, token);
-        } catch (IngredientNofFoundException exc) {
-            throw new IngredientNofFoundException(exc.getMessage());
-        } catch (AuthorizationException exc) {
-            throw new AuthorizationException(exc.getMessage());
-        }
+    public void deleteIngredientById(@PathVariable Long id) {
+
+            ingredientsService.deleteById(id);
     }
 
     @PutMapping()
-    public IngredientsDTO updateIngredient(@RequestBody IngredientsDTO ingredientsDTO, @RequestHeader(value = "Authorization") String token) {
-        try {
-            return ingredientsService.update(ingredientsDTO, token);
-        } catch (IllegalArgumentException exc) {
-            throw new IllegalArgumentException(exc.getMessage());
-        } catch (AuthorizationException exc) {
-            throw new AuthorizationException(exc.getMessage());
-        }
+    public IngredientsDTO updateIngredient(@RequestBody IngredientsDTO ingredientsDTO) {
+
+            return ingredientsService.update(ingredientsDTO);
     }
 
 }

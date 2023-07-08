@@ -19,49 +19,38 @@ public class ProductsOnListController {
     private final ProductsOnListService productsOnListService;
 
     @GetMapping("/{id}")
-    public ProductsOnListDTO findProductsOnListById(@PathVariable Long id, @RequestHeader("Authorization") String token) {
-        try {
-            return productsOnListService.findById(id, token);
-        } catch (AuthorizationException exc) {
-            throw new AuthorizationException(exc.getMessage());
-        } catch (ProductOnListNotFoundException exc) {
-            throw new ProductOnListNotFoundException(exc.getMessage());
-        }
+    public ProductsOnListDTO findProductsOnListById(@PathVariable Long id) {
+
+            return productsOnListService.findById(id);
     }
 
     @GetMapping("/shopping-list/{id}")
-    public List<ProductsOnListDTO> findAllProductsOnListByShoppingListId(@PathVariable Long id, @RequestHeader("Authorization") String token) {
-        try {
-            return productsOnListService.findAllByShoppingListId(id, token);
-        } catch (AuthorizationException exc) {
-            throw new AuthorizationException(exc.getMessage());
-        }
+    public List<ProductsOnListDTO> findAllProductsOnListByShoppingListId(@PathVariable Long id) {
+
+            return productsOnListService.findAllByShoppingListId(id);
     }
 
     @PostMapping()
-    public ProductsOnListDTO createProductOnList(@RequestBody ProductsOnListDTO productsOnListDTO, @RequestHeader("Authorization") String token) {
-        try {
-            return productsOnListService.save(productsOnListDTO, token);
-        } catch (AuthorizationException exc) {
-            throw new AuthorizationException(exc.getMessage());
-        }
+    public ProductsOnListDTO createProductOnList(@RequestBody ProductsOnListDTO productsOnListDTO) {
+
+            return productsOnListService.save(productsOnListDTO);
     }
 
     @PostMapping("/recipe/{recipeId}/{shoppingListId}")
-    public List<ProductsOnListDTO> addAllProductsFromRecipe(@PathVariable Long recipeId, @PathVariable Long shoppingListId, @RequestHeader("Authorization") String token) {
-        return productsOnListService.addingAllProductsFromRecipe(recipeId, shoppingListId, token);
+    public List<ProductsOnListDTO> addAllProductsFromRecipe(@PathVariable Long recipeId, @PathVariable Long shoppingListId) {
+        return productsOnListService.addingAllProductsFromRecipe(recipeId, shoppingListId);
     }
 
     @PostMapping("/food-plan/{foodPlanId}/{shoppingListId}")
-    public List<List<ProductsOnListDTO>> addAllProductsFromFoodPlan(@PathVariable Long foodPlanId, @PathVariable Long shoppingListId, @RequestHeader("Authorization") String token) {
-        return productsOnListService.addingProductsFromWeeklyPlan(foodPlanId, shoppingListId, token);
+    public List<List<ProductsOnListDTO>> addAllProductsFromFoodPlan(@PathVariable Long foodPlanId, @PathVariable Long shoppingListId) {
+        return productsOnListService.addingProductsFromWeeklyPlan(foodPlanId, shoppingListId);
     }
 
 
     @DeleteMapping("/{id}")
-    public void deleteProductsOnList(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+    public void deleteProductsOnList(@PathVariable Long id) {
         try {
-            productsOnListService.deleteById(id, token);
+            productsOnListService.deleteById(id);
         } catch (AuthorizationException exc) {
             throw new AuthorizationException(exc.getMessage());
         } catch (ProductOnListNotFoundException exc) {
@@ -70,9 +59,9 @@ public class ProductsOnListController {
     }
 
     @PutMapping()
-    public ProductsOnListDTO updateProductOnList(@RequestBody ProductsOnListDTO productsOnListDTO, @RequestHeader("Authorization") String token) {
+    public ProductsOnListDTO updateProductOnList(@RequestBody ProductsOnListDTO productsOnListDTO) {
         try {
-            return productsOnListService.update(productsOnListDTO, token);
+            return productsOnListService.update(productsOnListDTO);
         } catch (IllegalArgumentException exc) {
             throw new IllegalArgumentException(exc.getMessage());
         } catch (AuthorizationException exc) {

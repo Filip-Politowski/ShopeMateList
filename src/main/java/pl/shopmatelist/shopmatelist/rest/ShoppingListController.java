@@ -1,6 +1,7 @@
 package pl.shopmatelist.shopmatelist.rest;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import pl.shopmatelist.shopmatelist.dto.ProductsOnListDTO;
 import pl.shopmatelist.shopmatelist.dto.ShoppingListDTO;
@@ -19,53 +20,41 @@ public class ShoppingListController {
     private final ShoppingListService shoppingListService;
 
     @GetMapping("/{id}")
-    public ShoppingListDTO findShoppingListById(@PathVariable Long id, @RequestHeader("Authorization") String token) {
-        try {
-            return shoppingListService.findById(id, token);
-        } catch (ShoppingListNotFoundException exc) {
-            throw new ShoppingListNotFoundException(exc.getMessage());
-        }
+    public ShoppingListDTO findShoppingListById(@PathVariable Long id) {
+
+        return shoppingListService.findById(id);
+
     }
 
     @GetMapping()
-    public List<ShoppingListDTO> findAllShoppingLists(@RequestHeader("Authorization") String token) {
-        return shoppingListService.findAll(token);
+    public List<ShoppingListDTO> findAllShoppingLists() {
+        return shoppingListService.findAll();
     }
 
 
     @PostMapping()
-    public ShoppingListDTO createShoppingList(@RequestBody ShoppingListDTO shoppingListDTO, @RequestHeader("Authorization") String token) {
-        return shoppingListService.save(shoppingListDTO, token);
+    public ShoppingListDTO createShoppingList(@RequestBody ShoppingListDTO shoppingListDTO) {
+        return shoppingListService.save(shoppingListDTO);
     }
 
     @PostMapping("/share/{shoppingListId}/{userId}")
-    public ShoppingListDTO shareShoppingList(@PathVariable Long shoppingListId, @PathVariable Long userId, @RequestHeader("Authorization") String token) {
-        try {
-            return shoppingListService.shareShoppingList(shoppingListId, token, userId);
+    public ShoppingListDTO shareShoppingList(@PathVariable Long shoppingListId, @PathVariable Long userId) {
 
-        } catch (UserNotFoundException exc) {
-            throw new UserNotFoundException(exc.getMessage());
-        } catch (ShoppingListNotFoundException exc) {
-            throw new ShoppingListNotFoundException(exc.getMessage());
-        }
+            return shoppingListService.shareShoppingList(shoppingListId, userId);
+
     }
 
     @DeleteMapping("/{id}")
-    public void deleteShoppingList(@PathVariable Long id, @RequestHeader("Authorization") String token) {
-        try {
-            shoppingListService.deleteById(id, token);
-        } catch (ShoppingListNotFoundException exc) {
-            throw new ShoppingListNotFoundException(exc.getMessage());
-        }
+    public void deleteShoppingList(@PathVariable Long id) {
+
+        shoppingListService.deleteById(id);
+
     }
 
     @PutMapping()
-    public ShoppingListDTO updateShoppingList(@RequestBody ShoppingListDTO shoppingListDTO, @RequestHeader("Authorization") String token) {
-        try {
-            return shoppingListService.update(shoppingListDTO, token);
-        } catch (IllegalArgumentException exc) {
-            throw new IllegalArgumentException(exc.getMessage());
-        }
+    public ShoppingListDTO updateShoppingList(@RequestBody ShoppingListDTO shoppingListDTO) {
+
+            return shoppingListService.update(shoppingListDTO);
 
     }
 

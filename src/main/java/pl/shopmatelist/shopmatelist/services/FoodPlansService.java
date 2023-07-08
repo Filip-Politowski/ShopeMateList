@@ -25,12 +25,12 @@ public class FoodPlansService {
     private final FoodPlansRepository foodPlansRepository;
     private final FoodPlansMapper foodPlansMapper;
     private final UserService userService;
-    private final WeeklyFoodPlanRepository  weeklyFoodPlanRepository;
+    private final WeeklyFoodPlanRepository weeklyFoodPlanRepository;
+    private final AuthenticationService authenticationService;
 
-    public FoodPlansDTO findById(Long foodPlanId, String token) {
-        User user = userService.userFromToken(token);
+    public FoodPlansDTO findById(Long foodPlanId) {
 
-        Optional<FoodPlans> foodPlan = foodPlansRepository.findByFoodPlanIdAndUser(foodPlanId, user);
+        Optional<FoodPlans> foodPlan = foodPlansRepository.findByFoodPlanIdAndUser(foodPlanId, authenticationService.authenticatedUser());
         if (foodPlan.isPresent()) {
             FoodPlans foundFoodPlan = foodPlan.get();
             return foodPlansMapper.toDto(foundFoodPlan);
@@ -38,32 +38,31 @@ public class FoodPlansService {
         throw new FoodPlanNotFoundException("Nie ma planu o id: " + foodPlanId);
     }
 
-    public List<FoodPlansDTO> findAll(String token) {
-        User user = userService.userFromToken(token);
-        List<FoodPlans> foodPlans = foodPlansRepository.findAllByUser(user);
+    public List<FoodPlansDTO> findAll() {
+
+        List<FoodPlans> foodPlans = foodPlansRepository.findAllByUser(authenticationService.authenticatedUser());
         if (foodPlans.isEmpty()) {
             throw new FoodPlanNotFoundException("Brak planów posiłków");
         }
         return foodPlansMapper.toDtoList(foodPlans);
     }
 
-    public FoodPlansDTO save(FoodPlansDTO foodPlansDTO, String token) {
-        User user = userService.userFromToken(token);
+    public FoodPlansDTO save(FoodPlansDTO foodPlansDTO) {
 
-        Optional<FoodPlans> userFoodPlan = foodPlansRepository.findByFoodPlanNameAndUser(foodPlansDTO.getFoodPlanName(), user);
-        if(userFoodPlan.isPresent()) {
+        Optional<FoodPlans> userFoodPlan = foodPlansRepository.findByFoodPlanNameAndUser(foodPlansDTO.getFoodPlanName(), authenticationService.authenticatedUser());
+        if (userFoodPlan.isPresent()) {
             throw new IllegalArgumentException("Taki plan już istnieje!");
         }
 
         FoodPlans foodPlan = foodPlansMapper.toEntity(foodPlansDTO);
-        foodPlan.setUser(user);
+        foodPlan.setUser(authenticationService.authenticatedUser());
         FoodPlans savedFoodPlan = foodPlansRepository.save(foodPlan);
         return foodPlansMapper.toDto(savedFoodPlan);
     }
 
-    public void deleteById(Long id, String token) {
-        User user = userService.userFromToken(token);
-        Optional<FoodPlans> foodPlan = foodPlansRepository.findByFoodPlanIdAndUser(id, user);
+    public void deleteById(Long id) {
+
+        Optional<FoodPlans> foodPlan = foodPlansRepository.findByFoodPlanIdAndUser(id, authenticationService.authenticatedUser());
         if (foodPlan.isPresent()) {
             FoodPlans foundFoodPlan = foodPlan.get();
 
@@ -76,14 +75,14 @@ public class FoodPlansService {
         throw new FoodPlanNotFoundException("Nie ma planu o id: " + id);
     }
 
-    public FoodPlansDTO update(FoodPlansDTO foodPlansDTO, String token) {
+    public FoodPlansDTO update(FoodPlansDTO foodPlansDTO) {
 
-        if(foodPlansDTO.getFoodPlanId() == null) {
+        if (foodPlansDTO.getFoodPlanId() == null) {
             throw new java.lang.IllegalArgumentException("Należy podać ID planu");
         }
-        User user = userService.userFromToken(token);
+
         FoodPlans foodPlan = foodPlansMapper.toEntity(foodPlansDTO);
-        foodPlan.setUser(user);
+        foodPlan.setUser(authenticationService.authenticatedUser());
         FoodPlans updatedFoodPlan = foodPlansRepository.save(foodPlan);
         return foodPlansMapper.toDto(updatedFoodPlan);
     }
