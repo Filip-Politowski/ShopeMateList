@@ -1,41 +1,73 @@
 package pl.shopmatelist.shopmatelist.rest;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import pl.shopmatelist.shopmatelist.dto.RecipesDTO;
+import pl.shopmatelist.shopmatelist.exceptions.IllegalArgumentException;
+import pl.shopmatelist.shopmatelist.exceptions.RecipeNotFoundException;
 import pl.shopmatelist.shopmatelist.services.RecipesService;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/recipe")
+@RequiredArgsConstructor
 public class RecipesController {
 
     private final RecipesService recipesService;
 
-    @Autowired
-    public RecipesController(RecipesService recipesService) {
-        this.recipesService = recipesService;
+
+
+    @GetMapping("/{id}")
+    public RecipesDTO findRecipeById(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+        try {
+            return  recipesService.findById(id, token);
+        }
+        catch (RecipeNotFoundException exc) {
+             throw new RecipeNotFoundException(exc.getMessage());
+        }
     }
 
-    @GetMapping("/recipes/{id}")
-    public RecipesDTO findRecipeById(@PathVariable Long id){
-        return recipesService.findById(id);
+    @GetMapping()
+    public List<RecipesDTO> findAllRecipes( @RequestHeader("Authorization") String token){
+        return recipesService.findAll(token);
     }
 
-    @GetMapping("/recipes")
-    public List<RecipesDTO> findAllRecipes(){
-        return recipesService.findAll();
+    @PostMapping()
+    public RecipesDTO createRecipes(@RequestBody RecipesDTO recipesDTO, @RequestHeader("Authorization") String token) {
+       try {
+           return  recipesService.save(recipesDTO, token);
+       }catch (IllegalArgumentException exc) {
+           throw new IllegalArgumentException(exc.getMessage());
+       }
+
+
     }
 
-    @PostMapping("/recipes")
-    public RecipesDTO createRecipes(@RequestBody RecipesDTO recipesDTO) {
-        return  recipesService.createRecipes(recipesDTO);
+    @DeleteMapping("/{id}")
+    public void deleteRecipesById(@PathVariable Long id, @RequestHeader("Authorization") String token){
+       try {
+           recipesService.deleteById(id, token);
+       }catch (RecipeNotFoundException exc) {
+           throw new RecipeNotFoundException(exc.getMessage());
+       }
+
     }
 
-    @DeleteMapping("/recipes/{id}")
-    public void deleteRecipesById(@PathVariable Long id){
-        recipesService.deleteById(id);
+    @PutMapping()
+    public RecipesDTO updateRecipes(@RequestBody RecipesDTO recipesDTO, @RequestHeader("Authorization") String token) {
+        try {
+            return recipesService.update(recipesDTO, token);
+        }catch (RecipeNotFoundException exc){
+            throw new RecipeNotFoundException(exc.getMessage());
+        }
+
     }
 
 

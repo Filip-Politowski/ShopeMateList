@@ -20,5 +20,8 @@ public class Recipes {
     private String recipeName;
     @Column(name = "recipe_description")
     private String recipeDescription;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }

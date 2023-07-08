@@ -18,14 +18,15 @@ public class FoodPlansMapper {
     public FoodPlansDTO toDto(FoodPlans foodPlans){
         FoodPlansDTO dto = new FoodPlansDTO();
         dto.setFoodPlanId(foodPlans.getFoodPlanId());
-        dto.setDescription(foodPlans.getDescription());
+        dto.setFoodPlanName(foodPlans.getFoodPlanName());
+        dto.setUserId(foodPlans.getUser().getId());
         return dto;
     }
 
     public FoodPlans toEntity(FoodPlansDTO foodPlansDTO){
         FoodPlans foodPlans = new FoodPlans();
         foodPlans.setFoodPlanId(foodPlansDTO.getFoodPlanId());
-        foodPlans.setDescription(foodPlansDTO.getDescription());
+        foodPlans.setFoodPlanName(foodPlansDTO.getFoodPlanName());
 
         return foodPlans;
     }

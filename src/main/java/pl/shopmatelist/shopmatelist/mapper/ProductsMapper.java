@@ -14,7 +14,7 @@ public class ProductsMapper {
         ProductsDTO dto = new ProductsDTO();
         dto.setProductId(products.getProductId());
         dto.setProductName(products.getProductName());
-        dto.setCategory(products.getCategory());
+        dto.setFoodCategory(products.getFoodCategory());
         return dto;
     }
 
@@ -22,7 +22,7 @@ public class ProductsMapper {
         Products products = new Products();
         products.setProductId(dto.getProductId());
         products.setProductName(dto.getProductName());
-        products.setCategory(dto.getCategory());
+        products.setFoodCategory(dto.getFoodCategory());
         return products;
     }
 

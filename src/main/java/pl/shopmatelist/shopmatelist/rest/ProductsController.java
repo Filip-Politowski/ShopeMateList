@@ -1,49 +1,85 @@
 package pl.shopmatelist.shopmatelist.rest;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import pl.shopmatelist.shopmatelist.dto.ProductsDTO;
+import pl.shopmatelist.shopmatelist.entity.response.DeleteResponse;
+import pl.shopmatelist.shopmatelist.exceptions.AuthorizationException;
+import pl.shopmatelist.shopmatelist.exceptions.IllegalArgumentException;
+import pl.shopmatelist.shopmatelist.exceptions.ProductNotFoundException;
 import pl.shopmatelist.shopmatelist.services.ProductsService;
+import pl.shopmatelist.shopmatelist.services.impl.UserServiceImpl;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+
+
+@Data
+@RequiredArgsConstructor
+@RequestMapping("/api/products")
 public class ProductsController {
 
     private final ProductsService productsService;
+    private final UserServiceImpl userService;
 
-    @Autowired
-    public ProductsController(ProductsService productsService) {
-        this.productsService = productsService;
-    }
 
-    @GetMapping("/products/{id}")
+    @GetMapping("/{id}")
     public ProductsDTO findProductById(@PathVariable Long id) {
-        return productsService.findById(id);
+        try {
+            return productsService.findById(id);
+        } catch (ProductNotFoundException exc) {
+            throw new ProductNotFoundException(exc.getMessage());
+        }
+
     }
 
-    @GetMapping("/products")
-    List<ProductsDTO> findAllProducts(){
+    @GetMapping()
+    List<ProductsDTO> findAllProducts() {
         return productsService.findAll();
     }
 
-    @PostMapping("/products")
-
-    public ProductsDTO createProduct(@RequestBody ProductsDTO productsDTO) {
-        return productsService.createProducts(productsDTO);
-    }
-
-    @DeleteMapping("/products/{id}")
-    public void deleteProductById(@PathVariable Long id){
-        productsService.deleteById(id);
-    }
-
-    @PutMapping("/products")
-    public ProductsDTO updateProduct(ProductsDTO productsDTO){
-        return productsService.update(productsDTO);
+    @PostMapping()
+    public ProductsDTO createProduct(@RequestBody ProductsDTO productsDTO, Authentication authentication) {
+        if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ADMIN"))) {
+            try {
+                return productsService.createProducts(productsDTO);
+            } catch (IllegalArgumentException exc) {
+                throw new IllegalArgumentException(exc.getMessage());
+            }
+        }
+        throw new AuthorizationException("Potrzebne są uprawienia administratora");
     }
 
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<DeleteResponse> deleteProductById(@PathVariable Long id, Authentication authentication) {
+        if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ADMIN"))) {
+            try {
+                productsService.deleteById(id);
+                return new ResponseEntity<>(new DeleteResponse("Produkt usunięty poprawnie", 200), HttpStatus.OK);
+            } catch (ProductNotFoundException exc) {
+                throw new ProductNotFoundException(exc.getMessage());
+            }
+        }
+        throw new AuthorizationException("Potrzebne są uprawienia administratora");
+    }
+
+    @PutMapping()
+    public ProductsDTO updateProduct(@RequestBody ProductsDTO productsDTO, Authentication authentication) {
+        if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ADMIN"))) {
+            try {
+                return productsService.update(productsDTO);
+            } catch (IllegalArgumentException exc) {
+                throw new IllegalArgumentException(exc.getMessage());
+            }
+        }
+        throw new AuthorizationException("Potrzebne są uprawienia administratora");
+    }
 
 }

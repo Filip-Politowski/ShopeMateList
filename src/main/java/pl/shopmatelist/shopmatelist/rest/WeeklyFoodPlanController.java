@@ -3,45 +3,72 @@ package pl.shopmatelist.shopmatelist.rest;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import pl.shopmatelist.shopmatelist.dto.WeeklyFoodPlanDTO;
+import pl.shopmatelist.shopmatelist.exceptions.AuthorizationException;
+import pl.shopmatelist.shopmatelist.exceptions.IllegalArgumentException;
+import pl.shopmatelist.shopmatelist.exceptions.WeeklyFoodPlanNotFoundException;
 import pl.shopmatelist.shopmatelist.services.WeeklyFoodPlanService;
 
 import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/weekly-food-plan")
 public class WeeklyFoodPlanController {
 
     private final WeeklyFoodPlanService weeklyFoodPlanService;
 
-    @GetMapping("/weeklyfoodplan/{id}")
-    public WeeklyFoodPlanDTO findWeeklyFoodPlanById(@PathVariable Long id){
-        return weeklyFoodPlanService.findById(id);
-    }
-    @GetMapping("/weeklyfoodplan")
-    public List<WeeklyFoodPlanDTO> findAllWeeklyFoodPlans(){
-        return weeklyFoodPlanService.findAll();
-    }
-
-    @GetMapping("/weeklyfoodplan/all/{id}")
-    public List<WeeklyFoodPlanDTO> findAllWeeklyFoodPlansById(@PathVariable Long id){
-        return weeklyFoodPlanService.findAllByFoodPlanId(id);
+    @GetMapping("/{id}")
+    public WeeklyFoodPlanDTO findWeeklyFoodPlanById(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+        try {
+            return weeklyFoodPlanService.findById(id, token);
+        } catch (WeeklyFoodPlanNotFoundException exc) {
+            throw new WeeklyFoodPlanNotFoundException(exc.getMessage());
+        } catch (AuthorizationException exc) {
+            throw new AuthorizationException(exc.getMessage());
+        }
     }
 
-    @PostMapping("/weeklyfoodplan")
-    public WeeklyFoodPlanDTO createWeeklyFoodPlan(@RequestBody WeeklyFoodPlanDTO weeklyFoodPlanDTO){
-        return weeklyFoodPlanService.save(weeklyFoodPlanDTO);
+    @GetMapping("/food-plan/{id}")
+    public List<WeeklyFoodPlanDTO> findAllWeeklyFoodPlansByFoodPlanId(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+        try {
+            return weeklyFoodPlanService.findAllByFoodPlanId(id, token);
+        } catch (AuthorizationException exc) {
+            throw new AuthorizationException(exc.getMessage());
+        }
     }
 
-    @DeleteMapping("/weeklyfoodplan/{id}")
-    public void deleteWeeklyFoodPlan(@PathVariable Long id){
-        weeklyFoodPlanService.deleteById(id);
+    @PostMapping()
+    public WeeklyFoodPlanDTO createWeeklyFoodPlan(@RequestBody WeeklyFoodPlanDTO weeklyFoodPlanDTO, @RequestHeader("Authorization") String token) {
+        try {
+            return weeklyFoodPlanService.save(weeklyFoodPlanDTO, token);
+        } catch (AuthorizationException exc) {
+            throw new AuthorizationException(exc.getMessage());
+        } catch (IllegalArgumentException exc) {
+            throw new IllegalArgumentException(exc.getMessage());
+        }
     }
 
-    @PutMapping("/weeklyfoodplan")
-    public WeeklyFoodPlanDTO updateWeeklyFoodPlan(@RequestBody WeeklyFoodPlanDTO weeklyFoodPlanDTO){
-        return weeklyFoodPlanService.update(weeklyFoodPlanDTO);
+    @DeleteMapping("/{id}")
+    public void deleteWeeklyFoodPlan(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+        try {
+            weeklyFoodPlanService.deleteById(id, token);
+        } catch (AuthorizationException exc) {
+            throw new AuthorizationException(exc.getMessage());
+        } catch (WeeklyFoodPlanNotFoundException exc) {
+            throw new WeeklyFoodPlanNotFoundException(exc.getMessage());
+        }
+
     }
 
+    @PutMapping()
+    public WeeklyFoodPlanDTO updateWeeklyFoodPlan(@RequestBody WeeklyFoodPlanDTO weeklyFoodPlanDTO, @RequestHeader("Authorization") String token) {
+        try {
+            return weeklyFoodPlanService.update(weeklyFoodPlanDTO, token);
+        } catch (AuthorizationException exc) {
+            throw new AuthorizationException(exc.getMessage());
+        } catch (IllegalArgumentException exc) {
+            throw new IllegalArgumentException(exc.getMessage());
+        }
+    }
 
 }

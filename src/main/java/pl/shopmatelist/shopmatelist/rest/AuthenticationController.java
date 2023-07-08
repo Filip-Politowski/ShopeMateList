@@ -6,9 +6,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.shopmatelist.shopmatelist.dto.request.SignInRequest;
-import pl.shopmatelist.shopmatelist.dto.request.SignUpRequest;
-import pl.shopmatelist.shopmatelist.dto.response.JwtAuthenticationResponse;
+import pl.shopmatelist.shopmatelist.entity.request.SignInRequest;
+import pl.shopmatelist.shopmatelist.entity.request.SignUpRequest;
+import pl.shopmatelist.shopmatelist.entity.response.JwtAuthenticationResponse;
+import pl.shopmatelist.shopmatelist.exceptions.AuthorizationException;
 import pl.shopmatelist.shopmatelist.services.AuthenticationService;
 
 @RestController
@@ -26,6 +27,11 @@ public class AuthenticationController {
 
     @PostMapping("/signin")
     public ResponseEntity<JwtAuthenticationResponse> signin(@RequestBody SignInRequest request){
-        return ResponseEntity.ok(authenticationService.signin(request));
+       try {
+           return ResponseEntity.ok(authenticationService.signin(request));
+       }catch (AuthorizationException exc){
+           throw new AuthorizationException(exc.getMessage());
+       }
+
     }
 }

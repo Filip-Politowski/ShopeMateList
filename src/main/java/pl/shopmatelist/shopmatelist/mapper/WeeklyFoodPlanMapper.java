@@ -27,12 +27,14 @@ public class WeeklyFoodPlanMapper {
         dto.setRecipeId(weeklyFoodPlan.getRecipes().getRecipeId());
         dto.setRecipeName(weeklyFoodPlan.getRecipes().getRecipeName());
         dto.setFoodPlanId(weeklyFoodPlan.getFoodPlan().getFoodPlanId());
+        dto.setFoodPlanName(weeklyFoodPlan.getFoodPlan().getFoodPlanName());
         return dto;
     }
 
     public WeeklyFoodPlan toEntity(WeeklyFoodPlanDTO weeklyFoodPlanDTO){
         WeeklyFoodPlan weeklyFoodPlan = new WeeklyFoodPlan();
         weeklyFoodPlan.setMealType(weeklyFoodPlanDTO.getMealType());
+        weeklyFoodPlan.setWeeklyFoodPlanId(weeklyFoodPlanDTO.getWeeklyFoodPlanId());
 
         Recipes recipes = recipesRepository.findById(weeklyFoodPlanDTO.getRecipeId()).orElseThrow(() -> new NoSuchElementException("Nie ma takiego przepisu"));
         weeklyFoodPlan.setRecipes(recipes);
