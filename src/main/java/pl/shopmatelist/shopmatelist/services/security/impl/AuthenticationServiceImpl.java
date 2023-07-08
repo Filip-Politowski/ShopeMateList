@@ -1,4 +1,4 @@
-package pl.shopmatelist.shopmatelist.services.impl;
+package pl.shopmatelist.shopmatelist.services.security.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,8 +14,8 @@ import pl.shopmatelist.shopmatelist.entity.Role;
 import pl.shopmatelist.shopmatelist.entity.User;
 import pl.shopmatelist.shopmatelist.exceptions.UserNotFoundException;
 import pl.shopmatelist.shopmatelist.repository.UserRepository;
-import pl.shopmatelist.shopmatelist.services.AuthenticationService;
-import pl.shopmatelist.shopmatelist.services.JwtService;
+import pl.shopmatelist.shopmatelist.services.security.AuthenticationService;
+import pl.shopmatelist.shopmatelist.services.security.JwtService;
 
 import java.util.NoSuchElementException;
 

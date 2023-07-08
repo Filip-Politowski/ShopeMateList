@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import pl.shopmatelist.shopmatelist.dto.ShoppingListDTO;
+import pl.shopmatelist.shopmatelist.dto.request.RequestShoppingListDTO;
+import pl.shopmatelist.shopmatelist.dto.response.ResponseShoppingListDTO;
 import pl.shopmatelist.shopmatelist.entity.ProductsOnList;
 import pl.shopmatelist.shopmatelist.entity.ShoppingList;
 import pl.shopmatelist.shopmatelist.entity.User;
@@ -15,6 +16,7 @@ import pl.shopmatelist.shopmatelist.mapper.ShoppingListMapper;
 import pl.shopmatelist.shopmatelist.repository.ProductsOnListRepository;
 import pl.shopmatelist.shopmatelist.repository.ShoppingListRepository;
 import pl.shopmatelist.shopmatelist.repository.UserRepository;
+import pl.shopmatelist.shopmatelist.services.security.AuthenticationService;
 
 import java.util.*;
 
@@ -29,7 +31,7 @@ public class ShoppingListService {
     private final AuthenticationService authenticationService;
 
 
-    public ShoppingListDTO findById(Long id) {
+    public ResponseShoppingListDTO findById(Long id) {
 
         Optional<ShoppingList> shoppingList = shoppingListRepository.findByShoppingListIdAndUser(id, authenticationService.authenticatedUser());
 
@@ -41,19 +43,19 @@ public class ShoppingListService {
     }
 
 
-    public List<ShoppingListDTO> findAll() {
+    public List<ResponseShoppingListDTO> findAll() {
 
         List<ShoppingList> shoppingLists = shoppingListRepository.findAllByUser(authenticationService.authenticatedUser());
         return shoppingListMapper.toDtoList(shoppingLists);
     }
 
 
-    public ShoppingListDTO save(ShoppingListDTO shoppingListDTO) {
+    public ResponseShoppingListDTO save(RequestShoppingListDTO requestShoppingListDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Optional<User> user = userRepository.findByEmail(authentication.getName());
         if (user.isPresent()) {
             User authenticatedUser = user.get();
-            ShoppingList shoppingList = shoppingListMapper.toEntity(shoppingListDTO);
+            ShoppingList shoppingList = shoppingListMapper.toEntity(requestShoppingListDTO);
             shoppingList.setUser(authenticatedUser);
             shoppingList.setOwner(true);
             ShoppingList savedShoppingList = shoppingListRepository.save(shoppingList);
@@ -79,21 +81,21 @@ public class ShoppingListService {
     }
 
 
-    public ShoppingListDTO update(ShoppingListDTO shoppingListDTO) {
+    public ResponseShoppingListDTO update(RequestShoppingListDTO requestShoppingListDTO) {
 
-        if (shoppingListDTO.getShoppingListId() == null) {
+        if (requestShoppingListDTO.getShoppingListId() == null) {
             throw new IllegalArgumentException("Musisz podać ID listy zakupowej");
         }
 
-        ShoppingList shoppingList = shoppingListMapper.toEntity(shoppingListDTO);
+        ShoppingList shoppingList = shoppingListMapper.toEntity(requestShoppingListDTO);
         shoppingList.setUser(authenticationService.authenticatedUser());
-        shoppingList.setOwner(!shoppingListRepository.findByShoppingListIdAndUser(shoppingListDTO.getShoppingListId(), authenticationService.authenticatedUser()).get().getOwner().equals(false));
+        shoppingList.setOwner(!shoppingListRepository.findByShoppingListIdAndUser(requestShoppingListDTO.getShoppingListId(), authenticationService.authenticatedUser()).get().getOwner().equals(false));
         ShoppingList savedShoppingList = shoppingListRepository.save(shoppingList);
 
         return shoppingListMapper.toDTO(savedShoppingList);
     }
 
-    public ShoppingListDTO shareShoppingList(Long shoppingListId, Long userId) {
+    public ResponseShoppingListDTO shareShoppingList(Long shoppingListId, Long userId) {
 
         User userToShare = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Nie ma użytkownika o podanym ID"));
 

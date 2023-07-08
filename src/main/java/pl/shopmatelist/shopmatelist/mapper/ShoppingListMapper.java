@@ -2,9 +2,9 @@ package pl.shopmatelist.shopmatelist.mapper;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import pl.shopmatelist.shopmatelist.dto.ShoppingListDTO;
+import pl.shopmatelist.shopmatelist.dto.request.RequestShoppingListDTO;
+import pl.shopmatelist.shopmatelist.dto.response.ResponseShoppingListDTO;
 import pl.shopmatelist.shopmatelist.entity.Market;
 
 import pl.shopmatelist.shopmatelist.entity.ShoppingList;
@@ -21,8 +21,8 @@ public class ShoppingListMapper {
 
 
 
-    public ShoppingListDTO toDTO(ShoppingList shoppingList) {
-        ShoppingListDTO dto = new ShoppingListDTO();
+    public ResponseShoppingListDTO toDTO(ShoppingList shoppingList) {
+        ResponseShoppingListDTO dto = new ResponseShoppingListDTO();
         dto.setShoppingListId(shoppingList.getShoppingListId());
         dto.setMarketId(shoppingList.getMarket().getMarketId());
         dto.setShoppingDate(shoppingList.getShoppingDate());
@@ -32,7 +32,7 @@ public class ShoppingListMapper {
         return dto;
     }
 
-    public ShoppingList toEntity(ShoppingListDTO dto) {
+    public ShoppingList toEntity(RequestShoppingListDTO dto) {
         ShoppingList shoppingList = new ShoppingList();
 
         shoppingList.setShoppingListId(dto.getShoppingListId());
@@ -44,7 +44,7 @@ public class ShoppingListMapper {
 
     }
 
-    public List<ShoppingListDTO> toDtoList(List<ShoppingList> shoppingLists){
+    public List<ResponseShoppingListDTO> toDtoList(List<ShoppingList> shoppingLists){
         return shoppingLists.stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());

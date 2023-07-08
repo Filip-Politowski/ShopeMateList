@@ -1,4 +1,4 @@
-package pl.shopmatelist.shopmatelist.services;
+package pl.shopmatelist.shopmatelist.services.security;
 
 import pl.shopmatelist.shopmatelist.entity.User;
 import pl.shopmatelist.shopmatelist.entity.request.SignInRequest;

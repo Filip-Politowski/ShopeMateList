@@ -1,13 +1,9 @@
 package pl.shopmatelist.shopmatelist.rest;
 
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import pl.shopmatelist.shopmatelist.dto.ProductsOnListDTO;
-import pl.shopmatelist.shopmatelist.dto.ShoppingListDTO;
-import pl.shopmatelist.shopmatelist.exceptions.IllegalArgumentException;
-import pl.shopmatelist.shopmatelist.exceptions.ShoppingListNotFoundException;
-import pl.shopmatelist.shopmatelist.exceptions.UserNotFoundException;
+import pl.shopmatelist.shopmatelist.dto.request.RequestShoppingListDTO;
+import pl.shopmatelist.shopmatelist.dto.response.ResponseShoppingListDTO;
 import pl.shopmatelist.shopmatelist.services.ShoppingListService;
 
 import java.util.List;
@@ -20,25 +16,25 @@ public class ShoppingListController {
     private final ShoppingListService shoppingListService;
 
     @GetMapping("/{id}")
-    public ShoppingListDTO findShoppingListById(@PathVariable Long id) {
+    public ResponseShoppingListDTO findShoppingListById(@PathVariable Long id) {
 
         return shoppingListService.findById(id);
 
     }
 
     @GetMapping()
-    public List<ShoppingListDTO> findAllShoppingLists() {
+    public List<ResponseShoppingListDTO> findAllShoppingLists() {
         return shoppingListService.findAll();
     }
 
 
     @PostMapping()
-    public ShoppingListDTO createShoppingList(@RequestBody ShoppingListDTO shoppingListDTO) {
-        return shoppingListService.save(shoppingListDTO);
+    public ResponseShoppingListDTO createShoppingList(@RequestBody RequestShoppingListDTO requestShoppingListDTO) {
+        return shoppingListService.save(requestShoppingListDTO);
     }
 
     @PostMapping("/share/{shoppingListId}/{userId}")
-    public ShoppingListDTO shareShoppingList(@PathVariable Long shoppingListId, @PathVariable Long userId) {
+    public ResponseShoppingListDTO shareShoppingList(@PathVariable Long shoppingListId, @PathVariable Long userId) {
 
             return shoppingListService.shareShoppingList(shoppingListId, userId);
 
@@ -52,9 +48,9 @@ public class ShoppingListController {
     }
 
     @PutMapping()
-    public ShoppingListDTO updateShoppingList(@RequestBody ShoppingListDTO shoppingListDTO) {
+    public ResponseShoppingListDTO updateShoppingList(@RequestBody RequestShoppingListDTO requestShoppingListDTO) {
 
-            return shoppingListService.update(shoppingListDTO);
+            return shoppingListService.update(requestShoppingListDTO);
 
     }
 

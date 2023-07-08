@@ -1,4 +1,4 @@
-package pl.shopmatelist.shopmatelist.configuration;
+package pl.shopmatelist.shopmatelist.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -14,8 +14,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import pl.shopmatelist.shopmatelist.services.JwtService;
-import pl.shopmatelist.shopmatelist.services.UserService;
+import pl.shopmatelist.shopmatelist.services.security.JwtService;
+import pl.shopmatelist.shopmatelist.services.security.UserService;
 
 
 import java.io.IOException;

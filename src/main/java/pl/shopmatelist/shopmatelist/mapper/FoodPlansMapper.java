@@ -2,7 +2,8 @@ package pl.shopmatelist.shopmatelist.mapper;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import pl.shopmatelist.shopmatelist.dto.FoodPlansDTO;
+import pl.shopmatelist.shopmatelist.dto.request.RequestFoodPlansDTO;
+import pl.shopmatelist.shopmatelist.dto.response.ResponseFoodPlansDTO;
 import pl.shopmatelist.shopmatelist.entity.FoodPlans;
 import pl.shopmatelist.shopmatelist.repository.FoodPlansRepository;
 
@@ -15,23 +16,23 @@ public class FoodPlansMapper {
 
     private final FoodPlansRepository foodPlansRepository;
 
-    public FoodPlansDTO toDto(FoodPlans foodPlans){
-        FoodPlansDTO dto = new FoodPlansDTO();
+    public ResponseFoodPlansDTO toDto(FoodPlans foodPlans){
+        ResponseFoodPlansDTO dto = new ResponseFoodPlansDTO();
         dto.setFoodPlanId(foodPlans.getFoodPlanId());
         dto.setFoodPlanName(foodPlans.getFoodPlanName());
         dto.setUserId(foodPlans.getUser().getId());
         return dto;
     }
 
-    public FoodPlans toEntity(FoodPlansDTO foodPlansDTO){
+    public FoodPlans toEntity(RequestFoodPlansDTO responseFoodPlansDTO){
         FoodPlans foodPlans = new FoodPlans();
-        foodPlans.setFoodPlanId(foodPlansDTO.getFoodPlanId());
-        foodPlans.setFoodPlanName(foodPlansDTO.getFoodPlanName());
+        foodPlans.setFoodPlanId(responseFoodPlansDTO.getFoodPlanId());
+        foodPlans.setFoodPlanName(responseFoodPlansDTO.getFoodPlanName());
 
         return foodPlans;
     }
 
-    public List<FoodPlansDTO> toDtoList(List<FoodPlans> foodPlans){
+    public List<ResponseFoodPlansDTO> toDtoList(List<FoodPlans> foodPlans){
         return foodPlans.stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());

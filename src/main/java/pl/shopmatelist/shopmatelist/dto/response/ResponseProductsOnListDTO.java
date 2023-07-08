@@ -1,4 +1,4 @@
-package pl.shopmatelist.shopmatelist.dto;
+package pl.shopmatelist.shopmatelist.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +8,7 @@ import pl.shopmatelist.shopmatelist.entity.FoodCategory;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductsOnListDTO {
+public class ResponseProductsOnListDTO {
 
     private Long listItemId;
     private Long shoppingListId;

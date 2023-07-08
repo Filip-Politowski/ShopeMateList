@@ -2,7 +2,8 @@ package pl.shopmatelist.shopmatelist.services;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.shopmatelist.shopmatelist.dto.WeeklyFoodPlanDTO;
+import pl.shopmatelist.shopmatelist.dto.request.RequestWeeklyFoodPlanDTO;
+import pl.shopmatelist.shopmatelist.dto.response.ResponseWeeklyFoodPlanDTO;
 import pl.shopmatelist.shopmatelist.entity.*;
 import pl.shopmatelist.shopmatelist.exceptions.AuthorizationException;
 import pl.shopmatelist.shopmatelist.exceptions.IllegalArgumentException;
@@ -11,6 +12,8 @@ import pl.shopmatelist.shopmatelist.mapper.WeeklyFoodPlanMapper;
 import pl.shopmatelist.shopmatelist.repository.FoodPlansRepository;
 import pl.shopmatelist.shopmatelist.repository.RecipesRepository;
 import pl.shopmatelist.shopmatelist.repository.WeeklyFoodPlanRepository;
+import pl.shopmatelist.shopmatelist.services.security.AuthenticationService;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +28,7 @@ public class WeeklyFoodPlanService {
     private final RecipesRepository recipesRepository;
     private final AuthenticationService authenticationService;
 
-    public WeeklyFoodPlanDTO findById(Long weeklyFoodPlanId) {
+    public ResponseWeeklyFoodPlanDTO findById(Long weeklyFoodPlanId) {
 
         Optional<WeeklyFoodPlan> optionalWeeklyFoodPlan = weeklyFoodPlanRepository.findById(weeklyFoodPlanId);
 
@@ -42,7 +45,7 @@ public class WeeklyFoodPlanService {
         throw new WeeklyFoodPlanNotFoundException("Nie ma posiłku w planie tygodniowym o id: " + weeklyFoodPlanId);
     }
 
-    public List<WeeklyFoodPlanDTO> findAllByFoodPlanId(Long FoodPlanId) {
+    public List<ResponseWeeklyFoodPlanDTO> findAllByFoodPlanId(Long FoodPlanId) {
 
         List<FoodPlans> foodPlans = foodPlansRepository.findAllByUser(authenticationService.authenticatedUser());
 
@@ -55,14 +58,14 @@ public class WeeklyFoodPlanService {
         throw new AuthorizationException("Nie masz dostępu do tego planu tygodniowego");
     }
 
-    public WeeklyFoodPlanDTO save(WeeklyFoodPlanDTO weeklyFoodPlanDTO) {
+    public ResponseWeeklyFoodPlanDTO save(RequestWeeklyFoodPlanDTO requestWeeklyFoodPlanDTO) {
 
-        List<WeeklyFoodPlan> weeklyFoodPlans = weeklyFoodPlanRepository.findAllByFoodPlan_FoodPlanId(weeklyFoodPlanDTO.getFoodPlanId());
-        if (weeklyFoodPlans.stream().anyMatch(userWeeklyFoodPlan -> userWeeklyFoodPlan.getRecipes().getRecipeId().equals(weeklyFoodPlanDTO.getRecipeId()))) {
+        List<WeeklyFoodPlan> weeklyFoodPlans = weeklyFoodPlanRepository.findAllByFoodPlan_FoodPlanId(requestWeeklyFoodPlanDTO.getFoodPlanId());
+        if (weeklyFoodPlans.stream().anyMatch(userWeeklyFoodPlan -> userWeeklyFoodPlan.getRecipes().getRecipeId().equals(requestWeeklyFoodPlanDTO.getRecipeId()))) {
             throw new IllegalArgumentException("Dany posiłek w planie tygodniowym znajduje się już na liście, nie możesz dodać go ponownie");
         }
 
-        WeeklyFoodPlan weeklyFoodPlan = weeklyFoodPlanMapper.toEntity(weeklyFoodPlanDTO);
+        WeeklyFoodPlan weeklyFoodPlan = weeklyFoodPlanMapper.toEntity(requestWeeklyFoodPlanDTO);
         if (userAuthorizedByFoodPlan(weeklyFoodPlan, authenticationService.authenticatedUser())) {
             if(!recipeAuthorization(weeklyFoodPlan, authenticationService.authenticatedUser())){
                 throw new AuthorizationException("Nie masz dostępu do tego przepisu");
@@ -87,17 +90,17 @@ public class WeeklyFoodPlanService {
         throw new WeeklyFoodPlanNotFoundException("Nie ma planu tygodniowego o id: " + id);
     }
 
-    public WeeklyFoodPlanDTO update(WeeklyFoodPlanDTO weeklyFoodPlanDTO) {
-        if (weeklyFoodPlanDTO.getWeeklyFoodPlanId() == null) {
+    public ResponseWeeklyFoodPlanDTO update(RequestWeeklyFoodPlanDTO requestWeeklyFoodPlanDTO) {
+        if (requestWeeklyFoodPlanDTO.getWeeklyFoodPlanId() == null) {
             throw new IllegalArgumentException("Musisz podać id planu tygodniowego");
         }
 
-        WeeklyFoodPlan weeklyFoodPlan = weeklyFoodPlanMapper.toEntity(weeklyFoodPlanDTO);
+        WeeklyFoodPlan weeklyFoodPlan = weeklyFoodPlanMapper.toEntity(requestWeeklyFoodPlanDTO);
         if (userAuthorizedByFoodPlan(weeklyFoodPlan, authenticationService.authenticatedUser())) {
 
-            List<WeeklyFoodPlan> weeklyFoodPlans = weeklyFoodPlanRepository.findAllByFoodPlan_FoodPlanId(weeklyFoodPlanDTO.getFoodPlanId());
-            if (weeklyFoodPlans.stream().anyMatch(userWeeklyFoodPlan -> userWeeklyFoodPlan.getRecipes().getRecipeId().equals(weeklyFoodPlanDTO.getRecipeId()))) {
-                throw new IllegalArgumentException("Dany plan tygodniowy z id przepisu: " + weeklyFoodPlanDTO.getRecipeId() + " znajduje się już na liście, nie możesz zmienić przepisu na taki, który aktualnie znajduje się w bazie danych");
+            List<WeeklyFoodPlan> weeklyFoodPlans = weeklyFoodPlanRepository.findAllByFoodPlan_FoodPlanId(requestWeeklyFoodPlanDTO.getFoodPlanId());
+            if (weeklyFoodPlans.stream().anyMatch(userWeeklyFoodPlan -> userWeeklyFoodPlan.getRecipes().getRecipeId().equals(requestWeeklyFoodPlanDTO.getRecipeId()))) {
+                throw new IllegalArgumentException("Dany plan tygodniowy z id przepisu: " + requestWeeklyFoodPlanDTO.getRecipeId() + " znajduje się już na liście, nie możesz zmienić przepisu na taki, który aktualnie znajduje się w bazie danych");
             }
             if(!recipeAuthorization(weeklyFoodPlan,authenticationService.authenticatedUser())){
                 throw new AuthorizationException("Nie masz dostępu do tego przepisu");
