@@ -90,7 +90,11 @@ W celu uruchomienia aplikacji należy:
      spring.datasource.password=(hasło do tego użytkownika)
      ``` 
     * wgrać dane do bazy danych z plików z rozszerzeniem ```.sql```, pliki znajdują się w katalogu```resources```
-* Uruchomić aplikacje ```shift + F10```
+* Uruchomić aplikacje 
+```
+  mvn clean install
+  mvn spring-boot:run
+* ```
 * Po uruchomieniu aplikacji należy przejść do ```Swagger-UI``` pod linkiem: http://localhost:8080/swagger-ui/index.html
 * Następnie należy się zarejestrować oraz zalogować w celu uzyskania dostępu do wszystkich endpointów
 * Endpointy można również obsługiwać za pomocą ```POSTMAN```, należy pamiętać by przy procesie rejestracji i logowania ustawić autoryzację na ```none```. Po zalogowaniu na pozostałych endpointach należy ustawić autoryzację na bearerauth i skopiować token uzyskany podczas logowania
