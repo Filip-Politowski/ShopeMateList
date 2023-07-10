@@ -23,8 +23,8 @@ public class ShoppingListController {
     }
 
     @GetMapping()
-    public List<ResponseShoppingListDTO> findAllShoppingLists() {
-        return shoppingListService.findAll();
+    public List<ResponseShoppingListDTO> findAllShoppingLists(@RequestParam(name = "sort", defaultValue = "false") boolean sort) {
+        return shoppingListService.findAll(sort);
     }
 
 

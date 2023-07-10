@@ -10,6 +10,7 @@ import pl.shopmatelist.shopmatelist.exceptions.MarketNotFoundException;
 import pl.shopmatelist.shopmatelist.mapper.MarketMapper;
 import pl.shopmatelist.shopmatelist.repository.MarketRepository;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,8 +31,11 @@ public class MarketService {
         throw new MarketNotFoundException("Nie ma takiego marketu w bazie danych");
     }
 
-    public List<ResponseMarketDTO> findAll() {
+    public List<ResponseMarketDTO> findAll(boolean sort) {
         List<Market> markets = marketRepository.findAll();
+        if(sort){
+            markets.sort(Comparator.comparing(Market::getMarketName));
+        }
         if (markets.isEmpty()) {
             throw new MarketNotFoundException("Baza marketów jest pusta");
         }

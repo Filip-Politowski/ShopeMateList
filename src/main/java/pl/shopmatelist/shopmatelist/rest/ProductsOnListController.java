@@ -26,9 +26,9 @@ public class ProductsOnListController {
     }
 
     @GetMapping("/shopping-list/{id}")
-    public List<ResponseProductsOnListDTO> findAllProductsOnListByShoppingListId(@PathVariable Long id) {
+    public List<ResponseProductsOnListDTO> findAllProductsOnListByShoppingListId(@PathVariable Long id, @RequestParam(name = "sort", defaultValue = "false") boolean sort) {
 
-            return productsOnListService.findAllByShoppingListId(id);
+            return productsOnListService.findAllByShoppingListId(id, sort);
     }
 
     @PostMapping()

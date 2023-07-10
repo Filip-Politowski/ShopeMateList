@@ -43,9 +43,12 @@ public class ShoppingListService {
     }
 
 
-    public List<ResponseShoppingListDTO> findAll() {
+    public List<ResponseShoppingListDTO> findAll(boolean sort) {
 
         List<ShoppingList> shoppingLists = shoppingListRepository.findAllByUser(authenticationService.authenticatedUser());
+        if(sort){
+            shoppingLists.sort(Comparator.comparing(ShoppingList::getShoppingDate));
+        }
         return shoppingListMapper.toDtoList(shoppingLists);
     }
 

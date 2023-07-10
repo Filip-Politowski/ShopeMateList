@@ -39,8 +39,8 @@ public class ProductsController {
     }
 
     @GetMapping()
-    List<ResponseProductsDTO> findAllProducts() {
-        return productsService.findAll();
+    List<ResponseProductsDTO> findAllProducts(@RequestParam(value = "sort", defaultValue = "false") boolean sort) {
+        return productsService.findAll(sort);
     }
 
     @PostMapping()
