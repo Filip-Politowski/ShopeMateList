@@ -15,6 +15,7 @@ import pl.shopmatelist.shopmatelist.repository.IngredientsRepository;
 import pl.shopmatelist.shopmatelist.repository.RecipesRepository;
 import pl.shopmatelist.shopmatelist.services.security.AuthenticationService;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,7 +48,7 @@ public class IngredientsService {
 
     }
 
-    public List<ResponseIngredientsDTO> findAllByRecipeId(Long recipeId) {
+    public List<ResponseIngredientsDTO> findAllByRecipeId(Long recipeId, boolean sort) {
 
         List<Recipes> userRecipes = recipesRepository.findAllByUser(authenticationService.authenticatedUser());
         boolean hasMatchingRecipe = userRecipes.stream()
@@ -56,6 +57,9 @@ public class IngredientsService {
             List<Ingredients> ingredients = ingredientsRepository.findAllByRecipe_RecipeId(recipeId);
             if (ingredients.isEmpty()) {
                 throw new IngredientNofFoundException("Nie ma żadnych składników");
+            }
+            if(sort){
+                ingredients.sort(Comparator.comparing(ingredient -> ingredient.getProduct().getFoodCategory()));
             }
             return ingredientsMapper.toDtoList(ingredients);
         }

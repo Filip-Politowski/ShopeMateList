@@ -17,6 +17,7 @@ import pl.shopmatelist.shopmatelist.repository.WeeklyFoodPlanRepository;
 import pl.shopmatelist.shopmatelist.services.security.AuthenticationService;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -50,7 +51,7 @@ public class ProductsOnListService {
         throw new ProductOnListNotFoundException("Nie ma takiego produktu na liście zakupowej");
     }
 
-    public List<ResponseProductsOnListDTO> findAllByShoppingListId(Long shoppingListId) {
+    public List<ResponseProductsOnListDTO> findAllByShoppingListId(Long shoppingListId, boolean sort) {
 
         List<ShoppingList> userShoppingLists = shoppingListRepository.findAllByUser(authenticationService.authenticatedUser());
 
@@ -59,6 +60,12 @@ public class ProductsOnListService {
 
         if (hasMatchingShoppingList) {
             List<ProductsOnList> allFoundProductsOnList = productsOnListRepository.findAllByShoppingListId(shoppingListId);
+          if(sort){
+              allFoundProductsOnList.sort(Comparator.comparing(productsOnList -> productsOnList.getProduct().getFoodCategory()));
+          }
+
+
+
             return productsOnListMapper.toDtoList(allFoundProductsOnList);
         }
         throw new AuthorizationException("Brak uprawnień do odczytania tych produktów");

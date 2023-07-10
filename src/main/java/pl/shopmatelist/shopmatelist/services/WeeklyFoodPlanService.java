@@ -14,6 +14,7 @@ import pl.shopmatelist.shopmatelist.repository.RecipesRepository;
 import pl.shopmatelist.shopmatelist.repository.WeeklyFoodPlanRepository;
 import pl.shopmatelist.shopmatelist.services.security.AuthenticationService;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,15 +46,18 @@ public class WeeklyFoodPlanService {
         throw new WeeklyFoodPlanNotFoundException("Nie ma posiłku w planie tygodniowym o id: " + weeklyFoodPlanId);
     }
 
-    public List<ResponseWeeklyFoodPlanDTO> findAllByFoodPlanId(Long FoodPlanId) {
+    public List<ResponseWeeklyFoodPlanDTO> findAllByFoodPlanId(Long FoodPlanId, boolean sort) {
 
         List<FoodPlans> foodPlans = foodPlansRepository.findAllByUser(authenticationService.authenticatedUser());
 
         boolean isAuthorized = foodPlans.stream()
                 .anyMatch(foodPlan -> foodPlan.getFoodPlanId().equals(FoodPlanId));
         if (isAuthorized) {
-            List<WeeklyFoodPlan> WeeklyFoodPlans = weeklyFoodPlanRepository.findAllByFoodPlan_FoodPlanId(FoodPlanId);
-            return weeklyFoodPlanMapper.toDtoList(WeeklyFoodPlans);
+            List<WeeklyFoodPlan> weeklyFoodPlans = weeklyFoodPlanRepository.findAllByFoodPlan_FoodPlanId(FoodPlanId);
+            if(sort){
+                weeklyFoodPlans.sort(Comparator.comparing(WeeklyFoodPlan::getMealType));
+            }
+            return weeklyFoodPlanMapper.toDtoList(weeklyFoodPlans);
         }
         throw new AuthorizationException("Nie masz dostępu do tego planu tygodniowego");
     }

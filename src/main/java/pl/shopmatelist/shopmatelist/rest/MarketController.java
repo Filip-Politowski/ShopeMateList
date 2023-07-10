@@ -33,9 +33,9 @@ public class MarketController {
     }
 
     @GetMapping()
-    public List<ResponseMarketDTO> findAllMarkets() {
+    public List<ResponseMarketDTO> findAllMarkets(@RequestParam(name = "sort", defaultValue = "false") boolean sort) {
         try {
-            return marketService.findAll();
+            return marketService.findAll(sort);
         } catch (MarketNotFoundException exc) {
             throw new MarketNotFoundException(exc.getMessage());
         }
@@ -44,7 +44,7 @@ public class MarketController {
     @PostMapping()
     public ResponseMarketDTO createMarket(@RequestBody RequestMarketDTO requestMarketDTO, Authentication authentication) {
         if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ADMIN"))) {
-                return marketService.save(requestMarketDTO);
+            return marketService.save(requestMarketDTO);
         }
         throw new AuthorizationException("Potrzebne uprawnienia administratora");
     }
@@ -52,8 +52,8 @@ public class MarketController {
     @DeleteMapping("/{id}")
     public ResponseEntity<DeleteResponse> deleteMarket(@PathVariable Long id, Authentication authentication) {
         if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ADMIN"))) {
-                marketService.deleteById(id);
-                return new ResponseEntity<>(new DeleteResponse("Market usunięty poprawnie", 200), HttpStatus.OK);
+            marketService.deleteById(id);
+            return new ResponseEntity<>(new DeleteResponse("Market usunięty poprawnie", 200), HttpStatus.OK);
         }
         throw new AuthorizationException("Potrzebne uprawnienia administratora");
     }
@@ -61,7 +61,7 @@ public class MarketController {
     @PutMapping()
     public ResponseMarketDTO updateMarket(@RequestBody RequestMarketDTO requestMarketDTO, Authentication authentication) {
         if (authentication.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ADMIN"))) {
-                return marketService.update(requestMarketDTO);
+            return marketService.update(requestMarketDTO);
         }
         throw new AuthorizationException("Potrzebne uprawnienia administratora");
     }

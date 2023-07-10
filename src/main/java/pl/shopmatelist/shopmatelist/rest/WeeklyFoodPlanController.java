@@ -23,9 +23,9 @@ public class WeeklyFoodPlanController {
     }
 
     @GetMapping("/food-plan/{id}")
-    public List<ResponseWeeklyFoodPlanDTO> findAllWeeklyFoodPlansByFoodPlanId(@PathVariable Long id) {
+    public List<ResponseWeeklyFoodPlanDTO> findAllWeeklyFoodPlansByFoodPlanId(@PathVariable Long id, @RequestParam(name ="sort", defaultValue = "false")boolean sort) {
 
-            return weeklyFoodPlanService.findAllByFoodPlanId(id);
+            return weeklyFoodPlanService.findAllByFoodPlanId(id, sort);
     }
 
     @PostMapping()

@@ -5,12 +5,15 @@ import org.springframework.stereotype.Service;
 
 import pl.shopmatelist.shopmatelist.dto.request.RequestProductsDTO;
 import pl.shopmatelist.shopmatelist.dto.response.ResponseProductsDTO;
+import pl.shopmatelist.shopmatelist.entity.FoodCategory;
 import pl.shopmatelist.shopmatelist.entity.Products;
 import pl.shopmatelist.shopmatelist.exceptions.IllegalArgumentException;
 import pl.shopmatelist.shopmatelist.exceptions.ProductNotFoundException;
 import pl.shopmatelist.shopmatelist.mapper.ProductsMapper;
 import pl.shopmatelist.shopmatelist.repository.ProductsRepository;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,9 +34,14 @@ public class ProductsService {
         throw new ProductNotFoundException("Nie ma produktu o podanym id:  " + id);
     }
 
-    public List<ResponseProductsDTO> findAll() {
+    public List<ResponseProductsDTO> findAll(boolean sort) {
         List<Products> products = productsRepository.findAll();
+        if(sort){
+            products.sort(Comparator.comparing(Products::getFoodCategory)
+                    .thenComparing(Products::getProductName));
+        }
         return productsMapper.toDtoList(products);
+
     }
 
 

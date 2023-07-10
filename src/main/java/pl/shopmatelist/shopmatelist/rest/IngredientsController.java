@@ -19,34 +19,34 @@ public class IngredientsController {
     @GetMapping("/{id}")
     public ResponseIngredientsDTO findIngredientById(@PathVariable Long id) {
 
-            return ingredientsService.findById(id);
+        return ingredientsService.findById(id);
 
     }
 
     @GetMapping("/recipe/{id}")
-    public List<ResponseIngredientsDTO> findAllIngredients(@PathVariable Long id) {
+    public List<ResponseIngredientsDTO> findAllIngredients(@PathVariable Long id, @RequestParam(name = "sort", defaultValue = "false") boolean sort) {
 
-            return ingredientsService.findAllByRecipeId(id);
+        return ingredientsService.findAllByRecipeId(id, sort);
 
     }
 
     @PostMapping()
     public ResponseIngredientsDTO createIngredient(@RequestBody RequestIngredientsDTO requestIngredientsDTO) {
 
-            return ingredientsService.save(requestIngredientsDTO);
+        return ingredientsService.save(requestIngredientsDTO);
 
     }
 
     @DeleteMapping("/{id}")
     public void deleteIngredientById(@PathVariable Long id) {
 
-            ingredientsService.deleteById(id);
+        ingredientsService.deleteById(id);
     }
 
     @PutMapping()
     public ResponseIngredientsDTO updateIngredient(@RequestBody RequestIngredientsDTO requestIngredientsDTO) {
 
-            return ingredientsService.update(requestIngredientsDTO);
+        return ingredientsService.update(requestIngredientsDTO);
     }
 
 }
