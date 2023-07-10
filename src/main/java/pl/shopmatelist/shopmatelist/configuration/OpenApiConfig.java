@@ -18,7 +18,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
                 ),
                 description = "Dokumentacja do programu ShopMateList",
                 title = "ShopMateList",
-                version = "2.0"
+                version = "2.2"
         )
         ,
         servers =  {
@@ -47,3 +47,14 @@ import io.swagger.v3.oas.annotations.servers.Server;
 
 public class OpenApiConfig {
 }
+// kolekcje
+// lambdy
+// wzorce projektowe
+//wstrzykiwanie tylko przez konstruktor
+// co to są poziomy dojrzałości REST API
+// jak działają fizycznie bazy danych
+// jakie są scopy bean w spring
+//wielowątkowość poczytać deadlock livelock , problem konsumenta
+// hash mapa
+// web sockety
+// docker
